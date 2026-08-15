@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Control de Ventas — Copas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#10251a; --bg-deep:#0a1a12;
+    --card:rgba(255,255,255,0.05); --card-border:rgba(255,255,255,0.09);
+    --gold:#d8a93b; --gold-soft:#e9c874; --red:#c23b33;
+    --cream:#f5f1e6; --muted:#9fb3a6; --good:#7db884;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(ellipse at top, #1a3826 0%, var(--bg) 45%, var(--bg-deep) 100%);
+    color:var(--cream); font-family:'Work Sans', sans-serif; min-height:100vh; padding:18px 14px 60px;
+  }
+  .wrap{max-width:460px; margin:0 auto;}
+  header{text-align:center; padding:6px 0 18px;}
+  .eyebrow{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-soft); font-weight:600; opacity:.85;}
+  h1{
+    font-family:'Anton', sans-serif; font-weight:400; font-size:34px; letter-spacing:.01em;
+    margin:4px 0 2px; line-height:1.02;
+    background:linear-gradient(180deg, var(--cream), var(--gold-soft));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .sub{color:var(--muted); font-size:13px;}
+  .sync-badge{
+    display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--muted);
+    margin-top:8px; padding:4px 10px; border:1px solid var(--card-border); border-radius:20px;
+  }
+  .dot{width:7px; height:7px; border-radius:50%; background:var(--good);}
+  .dot.off{background:var(--red);}
+  .dot.busy{background:var(--gold-soft); animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.3;}}
+
+  .bottle-row{
+    display:flex; align-items:center; gap:16px; background:var(--card); border:1px solid var(--card-border);
+    border-radius:20px; padding:16px 18px; margin:16px 0;
+  }
+  .bottle-svg{flex-shrink:0;}
+  .bottle-stats{flex:1;}
+  .bottle-stats .amount{font-family:'Anton', sans-serif; font-size:26px; color:var(--cream); line-height:1;}
+  .bottle-stats .goal{color:var(--muted); font-size:12.5px; margin-top:4px;}
+  .bottle-stats .pct{color:var(--gold-soft); font-weight:700; font-size:13px; margin-top:6px;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;}
+  .inv-card{background:var(--card); border:1px solid var(--card-border); border-radius:16px; padding:12px 14px;}
+  .inv-card .label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;}
+  .inv-card .val{font-family:'Anton', sans-serif; font-size:24px; margin-top:2px;}
+  .inv-card .val small{font-family:'Work Sans'; font-size:13px; color:var(--muted); font-weight:500;}
+  .inv-card.warn .val{color:#e08a6b;}
+
+  .actions{display:flex; flex-direction:column; gap:10px; margin:18px 0;}
+  .btn-sale{
+    display:flex; align-items:center; justify-content:space-between; border:none; cursor:pointer;
+    border-radius:18px; padding:16px 18px; text-align:left; font-family:'Work Sans'; color:var(--bg-deep);
+    transition:transform .08s ease;
+  }
+  .btn-sale:active{transform:scale(.97);}
+  .btn-sale:disabled{opacity:.5; cursor:default;}
+  .btn-sale.single{background:linear-gradient(135deg, var(--gold-soft), var(--gold));}
+  .btn-sale.triple{background:linear-gradient(135deg, #e6b567, var(--red)); color:var(--cream);}
+  .btn-sale .name{font-weight:700; font-size:16.5px;}
+  .btn-sale .desc{font-size:12px; opacity:.85; margin-top:2px;}
+  .btn-sale .price{font-family:'Anton'; font-size:21px; white-space:nowrap; margin-left:10px;}
+
+  .note-input{
+    width:100%; padding:11px 14px; border-radius:12px; border:1px solid var(--card-border);
+    background:var(--card); color:var(--cream); font-size:13.5px; margin-bottom:10px;
+  }
+  .note-input::placeholder{color:var(--muted);}
+
+  .summary{background:var(--card); border:1px solid var(--card-border); border-radius:16px; padding:14px 16px; margin:8px 0 16px;}
+  .summary-row{display:flex; justify-content:space-between; padding:6px 0; font-size:14px;}
+  .summary-row + .summary-row{border-top:1px solid rgba(255,255,255,.06);}
+  .summary-row .lbl{color:var(--muted);}
+  .summary-row .v{font-weight:600;}
+  .summary-row .v.pos{color:var(--good);}
+  .summary-row .v.neg{color:#e08a6b;}
+
+  h2.section{
+    font-family:'Anton'; font-weight:400; font-size:16px; letter-spacing:.03em;
+    color:var(--gold-soft); text-transform:uppercase; margin:0 0 10px;
+  }
+  .hist-item{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 12px;
+    background:var(--card); border:1px solid var(--card-border); border-radius:12px; margin-bottom:8px; font-size:13.5px;
+  }
+  .hist-item .htype{font-weight:600;}
+  .hist-item .htime{color:var(--muted); font-size:11.5px; margin-top:2px;}
+  .hist-item .hprice{font-weight:700; color:var(--gold-soft);}
+  .hist-del{background:none; border:none; color:#e08a6b; font-size:18px; cursor:pointer; padding:2px 6px; margin-left:8px;}
+  .empty{color:var(--muted); font-size:13px; text-align:center; padding:16px 0;}
+
+  /* recibo */
+  .receipt-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.55); display:none;
+    align-items:flex-end; justify-content:center; z-index:60;
+  }
+  .receipt-overlay.show{display:flex;}
+  .receipt-card{
+    width:100%; max-width:460px; background:#fdfaf2; color:#2a2a24; border-radius:22px 22px 0 0;
+    padding:22px 20px 26px; font-family:'Work Sans';
+  }
+  .receipt-card h3{font-family:'Anton'; font-weight:400; font-size:20px; margin:0 0 4px; color:#1f2e22;}
+  .receipt-card .rline{display:flex; justify-content:space-between; font-size:14px; padding:5px 0; border-bottom:1px dashed #d8cfb8;}
+  .receipt-card .rtotal{font-weight:800; font-size:17px; margin-top:6px;}
+  .receipt-actions{display:flex; gap:10px; margin-top:16px;}
+  .receipt-actions button{
+    flex:1; padding:12px; border-radius:12px; border:none; font-weight:700; cursor:pointer; font-size:13.5px;
+  }
+  .btn-wa{background:#25D366; color:#08331b;}
+  .btn-close{background:#e7e2d3; color:#2a2a24;}
+
+  .reset-btn{display:block; margin:26px auto 0; background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer;}
+  .toast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--gold); color:var(--bg-deep);
+    font-weight:700; font-size:13.5px; padding:10px 18px; border-radius:30px; opacity:0; pointer-events:none;
+    transition:opacity .25s ease, bottom .25s ease; box-shadow:0 6px 18px rgba(0,0,0,.35); z-index:70; max-width:85%; text-align:center;
+  }
+  .toast.show{opacity:1; bottom:34px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Copas al parqueadero 🥃</div>
+    <h1>Caja del combo</h1>
+    <div class="sub">Conectado a la hoja de cálculo — todo queda registrado ahí</div>
+    <div class="sync-badge"><span class="dot" id="syncDot"></span><span id="syncTxt">Conectando…</span></div>
+  </header>
+
+  <div class="bottle-row">
+    <svg class="bottle-svg" width="52" height="92" viewBox="0 0 52 92">
+      <defs>
+        <clipPath id="bottleClip">
+          <path d="M20 4 h12 v14 c8 4 12 10 12 20 v40 a8 8 0 0 1 -8 8 h-20 a8 8 0 0 1 -8 -8 v-40 c0 -10 4 -16 12 -20 z"/>
+        </clipPath>
+        <linearGradient id="liquidGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="#d8a93b"/>
+          <stop offset="100%" stop-color="#e9c874"/>
+        </linearGradient>
+      </defs>
+      <path d="M20 4 h12 v14 c8 4 12 10 12 20 v40 a8 8 0 0 1 -8 8 h-20 a8 8 0 0 1 -8 -8 v-40 c0 -10 4 -16 12 -20 z"
+            fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+      <rect id="fillRect" x="0" y="92" width="52" height="0" fill="url(#liquidGrad)" clip-path="url(#bottleClip)"/>
+      <rect x="21" y="0" width="10" height="6" rx="1.5" fill="rgba(255,255,255,0.3)"/>
+    </svg>
+    <div class="bottle-stats">
+      <div class="amount" id="ingresoActual">$0</div>
+      <div class="goal">de la meta $1.335.000</div>
+      <div class="pct" id="pctTxt">0% recaudado</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="inv-card" id="cardVidrio">
+      <div class="label">Vidrio restante</div>
+      <div class="val" id="vidrioRestante">150 <small>/ 150</small></div>
+    </div>
+    <div class="inv-card" id="cardPlastico">
+      <div class="label">Plástico restante</div>
+      <div class="val" id="plasticoRestante">156 <small>/ 156</small></div>
+    </div>
+  </div>
+
+  <input class="note-input" id="compradorInput" type="text" placeholder="Nombre del comprador (opcional)">
+
+  <div class="actions">
+    <button class="btn-sale single" id="btnSingle" onclick="addSale('individual')">
+      <div>
+        <div class="name">Combo sencillo</div>
+        <div class="desc">1 copa vidrio + 1 copa plástico</div>
+      </div>
+      <div class="price">$10.000</div>
+    </button>
+    <button class="btn-sale triple" id="btnTriple" onclick="addSale('triple')">
+      <div>
+        <div class="name">Combo triple</div>
+        <div class="desc">3 copas vidrio + 3 copas plástico</div>
+      </div>
+      <div class="price">$25.000</div>
+    </button>
+  </div>
+
+  <h2 class="section">Resumen financiero</h2>
+  <div class="summary">
+    <div class="summary-row"><span class="lbl">Vendidos — sencillos</span><span class="v" id="rCountSingle">0</span></div>
+    <div class="summary-row"><span class="lbl">Vendidos — triples</span><span class="v" id="rCountTriple">0</span></div>
+    <div class="summary-row"><span class="lbl">Ingreso acumulado</span><span class="v" id="rIngreso">$0</span></div>
+    <div class="summary-row"><span class="lbl">Costo invertido</span><span class="v">$460.000</span></div>
+    <div class="summary-row"><span class="lbl">Utilidad hasta ahora</span><span class="v" id="rUtilidad">$0</span></div>
+    <div class="summary-row"><span class="lbl">Meta si se vende todo</span><span class="v">$1.335.000 · utilidad $875.000</span></div>
+  </div>
+
+  <h2 class="section">Historial de ventas</h2>
+  <div id="historyList"><div class="empty">Cargando…</div></div>
+
+  <button class="reset-btn" onclick="location.reload()">Recargar datos de la hoja</button>
+</div>
+
+<div class="receipt-overlay" id="receiptOverlay">
+  <div class="receipt-card">
+    <h3>Recibo de venta</h3>
+    <div class="sub" id="rFecha" style="color:#7a7261; font-size:12px; margin-bottom:10px;"></div>
+    <div class="rline"><span id="rTipoTxt"></span><span id="rValorTxt"></span></div>
+    <div class="rline" id="rCompradorLine" style="display:none;"><span>Comprador</span><span id="rCompradorTxt"></span></div>
+    <div class="rline rtotal"><span>Total</span><span id="rTotalTxt"></span></div>
+    <div class="receipt-actions">
+      <button class="btn-wa" onclick="enviarWhatsapp()">📲 Enviar por WhatsApp</button>
+      <button class="btn-close" onclick="cerrarRecibo()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ======= CONFIGURA ESTO ======= */
+const SCRIPT_URL = 'PEGA_AQUI_LA_URL_DE_TU_APPS_SCRIPT_WEB_APP';
+/* =============================== */
+
+let resumen = null;
+let ventas = [];
+let lastReceipt = null;
+
+function fmt(n){ return '$' + Math.round(n).toLocaleString('es-CO'); }
+
+function setSync(state){
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncTxt');
+  dot.className = 'dot' + (state === 'busy' ? ' busy' : state === 'off' ? ' off' : '');
+  txt.textContent = state === 'busy' ? 'Guardando…' : state === 'off' ? 'Sin conexión' : 'Sincronizado con la hoja';
+}
+
+async function cargarDatos(){
+  setSync('busy');
+  try{
+    const res = await fetch(SCRIPT_URL, { method:'GET' });
+    const data = await res.json();
+    ventas = data.ventas || [];
+    resumen = data.resumen;
+    render();
+    setSync('on');
+  }catch(err){
+    setSync('off');
+    showToast('⚠️ No se pudo conectar con la hoja de cálculo');
+  }
+}
+
+async function addSale(tipo){
+  document.getElementById('btnSingle').disabled = true;
+  document.getElementById('btnTriple').disabled = true;
+  setSync('busy');
+  const comprador = document.getElementById('compradorInput').value.trim();
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain' }, // evita preflight CORS con Apps Script
+      body: JSON.stringify({ action:'add', tipo, comprador })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || 'Error desconocido');
+    ventas = data.ventas;
+    resumen = data.resumen;
+    render();
+    setSync('on');
+    document.getElementById('compradorInput').value = '';
+    mostrarRecibo(tipo, comprador);
+  }catch(err){
+    setSync('off');
+    showToast('⚠️ No se guardó la venta, intenta de nuevo');
+  }finally{
+    document.getElementById('btnSingle').disabled = false;
+    document.getElementById('btnTriple').disabled = false;
+  }
+}
+
+async function deleteSale(id){
+  if(!confirm('¿Eliminar esta venta de la hoja?')) return;
+  setSync('busy');
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify({ action:'delete', id })
+    });
+    const data = await res.json();
+    ventas = data.ventas;
+    resumen = data.resumen;
+    render();
+    setSync('on');
+  }catch(err){
+    setSync('off');
+    showToast('⚠️ No se pudo eliminar');
+  }
+}
+
+function render(){
+  if(!resumen) return;
+  const pct = Math.min(100, (resumen.ingreso / resumen.metaIngreso) * 100);
+
+  document.getElementById('ingresoActual').textContent = fmt(resumen.ingreso);
+  document.getElementById('pctTxt').textContent = pct.toFixed(0) + '% recaudado';
+
+  document.getElementById('vidrioRestante').innerHTML = resumen.vidrioRestante + ' <small>/ ' + resumen.totalVidrio + '</small>';
+  document.getElementById('plasticoRestante').innerHTML = resumen.plasticoRestante + ' <small>/ ' + resumen.totalPlastico + '</small>';
+  document.getElementById('cardVidrio').classList.toggle('warn', resumen.vidrioRestante <= 15);
+  document.getElementById('cardPlastico').classList.toggle('warn', resumen.plasticoRestante <= 15);
+
+  document.getElementById('rCountSingle').textContent = resumen.sencillos;
+  document.getElementById('rCountTriple').textContent = resumen.triples;
+  document.getElementById('rIngreso').textContent = fmt(resumen.ingreso);
+  const rUt = document.getElementById('rUtilidad');
+  rUt.textContent = fmt(resumen.utilidad);
+  rUt.className = 'v ' + (resumen.utilidad >= 0 ? 'pos' : 'neg');
+
+  const fillRect = document.getElementById('fillRect');
+  const maxH = 88;
+  const h = (pct/100) * maxH;
+  fillRect.setAttribute('y', 92 - h);
+  fillRect.setAttribute('height', h);
+
+  const listEl = document.getElementById('historyList');
+  if(ventas.length === 0){
+    listEl.innerHTML = '<div class="empty">Todavía no hay ventas registradas.</div>';
+  }else{
+    const sorted = [...ventas].reverse();
+    listEl.innerHTML = sorted.map(v => {
+      const compradorTxt = v.comprador ? ' · ' + v.comprador : '';
+      return `<div class="hist-item">
+        <div>
+          <div class="htype">Combo ${v.tipo}${compradorTxt}</div>
+          <div class="htime">${v.fecha} ${v.hora}</div>
+        </div>
+        <div style="display:flex; align-items:center;">
+          <span class="hprice">${fmt(v.valor)}</span>
+          <button class="hist-del" onclick="deleteSale('${v.id}')">×</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function mostrarRecibo(tipo, comprador){
+  const esSencillo = tipo === 'individual';
+  const valor = esSencillo ? 10000 : 25000;
+  const desc = esSencillo ? '1 copa vidrio + 1 copa plástico' : '3 copas vidrio + 3 copas plástico';
+  const nombre = esSencillo ? 'Combo sencillo' : 'Combo triple';
+
+  document.getElementById('rFecha').textContent = new Date().toLocaleString('es-CO', { dateStyle:'medium', timeStyle:'short' });
+  document.getElementById('rTipoTxt').textContent = nombre + ' — ' + desc;
+  document.getElementById('rValorTxt').textContent = fmt(valor);
+  document.getElementById('rTotalTxt').textContent = fmt(valor);
+
+  const compLine = document.getElementById('rCompradorLine');
+  if(comprador){
+    compLine.style.display = 'flex';
+    document.getElementById('rCompradorTxt').textContent = comprador;
+  }else{
+    compLine.style.display = 'none';
+  }
+
+  lastReceipt = { nombre, desc, valor, comprador };
+  document.getElementById('receiptOverlay').classList.add('show');
+}
+
+function cerrarRecibo(){
+  document.getElementById('receiptOverlay').classList.remove('show');
+}
+
+function enviarWhatsapp(){
+  if(!lastReceipt) return;
+  const texto =
+`🥃 *Recibo de compra*
+${lastReceipt.nombre} — ${lastReceipt.desc}
+Total: ${fmt(lastReceipt.valor)}
+${lastReceipt.comprador ? 'Cliente: ' + lastReceipt.comprador : ''}
+¡Gracias por tu compra! 🎉`;
+  const url = 'https://wa.me/?text=' + encodeURIComponent(texto);
+  window.open(url, '_blank');
+}
+
+let toastTimer;
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+
+cargarDatos();
+</script>
+</body>
+</html>
