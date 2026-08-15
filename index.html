@@ -178,6 +178,11 @@
     transition:opacity .25s ease, bottom .25s ease; box-shadow:0 6px 18px rgba(0,0,0,.35); z-index:70; max-width:85%; text-align:center;
   }
   .toast.show{opacity:1; bottom:34px;}
+  .debug-box{
+    max-width:460px; margin:14px auto 0; background:#2a0f0f; border:1px solid #7a2d2d; border-radius:12px;
+    padding:12px 14px; font-size:11.5px; color:#f5c9c9; font-family:monospace; white-space:pre-wrap; word-break:break-word; display:none;
+  }
+  .debug-box.show{display:block;}
 </style>
 </head>
 <body>
@@ -255,6 +260,8 @@
     <span class="val" id="cartSubtotal">$0</span>
   </div>
   <button class="btn-register" id="btnRegister" onclick="registrarVenta()" disabled>Registrar venta</button>
+
+  <div class="debug-box" id="debugBox"></div>
 
   <h2 class="section">Resumen financiero</h2>
   <div class="summary">
@@ -356,11 +363,44 @@ function setSync(state){
   txt.textContent = state === 'busy' ? 'Guardando…' : state === 'off' ? 'Sin conexión' : 'Sincronizado con la hoja';
 }
 
+// Muestra el error real en pantalla (además de la consola) para que sea fácil copiarlo
+function showDebug(label, err, extra){
+  const box = document.getElementById('debugBox');
+  let msg = '❌ ' + label + '\n';
+  if (err) msg += 'Error: ' + (err.message || err) + '\n';
+  if (extra) msg += extra;
+  box.textContent = msg;
+  box.classList.add('show');
+  console.error(label, err, extra || '');
+}
+
+async function fetchConDiagnostico(url, options, etiqueta){
+  let res;
+  try{
+    res = await fetch(url, options);
+  }catch(err){
+    // Esto casi siempre es un fallo de red o de CORS antes de recibir cualquier respuesta
+    showDebug(etiqueta + ' — fetch() falló (red/CORS)', err);
+    throw err;
+  }
+  const rawText = await res.text();
+  if(!res.ok){
+    showDebug(etiqueta + ' — el servidor respondió con error HTTP ' + res.status, null, rawText.slice(0,300));
+    throw new Error('HTTP ' + res.status);
+  }
+  try{
+    return JSON.parse(rawText);
+  }catch(err){
+    // Esto pasa si Apps Script devolvió HTML (ej. página de login de Google) en vez de JSON
+    showDebug(etiqueta + ' — la respuesta no era JSON válido', err, rawText.slice(0,300));
+    throw err;
+  }
+}
+
 async function cargarDatos(){
   setSync('busy');
   try{
-    const res = await fetch(SCRIPT_URL, { method:'GET' });
-    const data = await res.json();
+    const data = await fetchConDiagnostico(SCRIPT_URL, { method:'GET' }, 'Cargar datos');
     ventas = data.ventas || [];
     resumen = data.resumen;
     render();
@@ -396,13 +436,12 @@ async function registrarVenta(){
   setSync('busy');
   const comprador = document.getElementById('compradorInput').value.trim();
   try{
-    const res = await fetch(SCRIPT_URL, {
+    const data = await fetchConDiagnostico(SCRIPT_URL, {
       method:'POST',
       headers:{ 'Content-Type':'text/plain' }, // evita preflight CORS con Apps Script
       body: JSON.stringify({ action:'add', items, comprador })
-    });
-    const data = await res.json();
-    if(!data.ok) throw new Error(data.error || 'Error desconocido');
+    }, 'Registrar venta');
+    if(!data.ok) { showDebug('Registrar venta — el script respondió ok:false', null, data.error); throw new Error(data.error || 'Error desconocido'); }
     ventas = data.ventas;
     resumen = data.resumen;
     render();
@@ -413,7 +452,7 @@ async function registrarVenta(){
     document.getElementById('compradorInput').value = '';
   }catch(err){
     setSync('off');
-    showToast('⚠️ No se guardó la venta, intenta de nuevo');
+    showToast('⚠️ No se guardó la venta, mira el detalle en el cuadro rojo');
     document.getElementById('btnRegister').disabled = false;
   }
 }
@@ -422,12 +461,11 @@ async function deleteSale(grupo){
   if(!confirm('¿Eliminar esta venta completa de la hoja?')) return;
   setSync('busy');
   try{
-    const res = await fetch(SCRIPT_URL, {
+    const data = await fetchConDiagnostico(SCRIPT_URL, {
       method:'POST',
       headers:{ 'Content-Type':'text/plain' },
       body: JSON.stringify({ action:'delete', grupo })
-    });
-    const data = await res.json();
+    }, 'Eliminar venta');
     ventas = data.ventas;
     resumen = data.resumen;
     render();
