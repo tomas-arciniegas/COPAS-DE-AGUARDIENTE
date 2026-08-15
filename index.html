@@ -55,25 +55,39 @@
   .inv-card .val small{font-family:'Work Sans'; font-size:13px; color:var(--muted); font-weight:500;}
   .inv-card.warn .val{color:#e08a6b;}
 
-  .actions{display:flex; flex-direction:column; gap:10px; margin:18px 0;}
-  .btn-sale{
-    display:flex; align-items:center; justify-content:space-between; border:none; cursor:pointer;
-    border-radius:18px; padding:16px 18px; text-align:left; font-family:'Work Sans'; color:var(--bg-deep);
-    transition:transform .08s ease;
-  }
-  .btn-sale:active{transform:scale(.97);}
-  .btn-sale:disabled{opacity:.5; cursor:default;}
-  .btn-sale.single{background:linear-gradient(135deg, var(--gold-soft), var(--gold));}
-  .btn-sale.triple{background:linear-gradient(135deg, #e6b567, var(--red)); color:var(--cream);}
-  .btn-sale .name{font-weight:700; font-size:16.5px;}
-  .btn-sale .desc{font-size:12px; opacity:.85; margin-top:2px;}
-  .btn-sale .price{font-family:'Anton'; font-size:21px; white-space:nowrap; margin-left:10px;}
-
   .note-input{
     width:100%; padding:11px 14px; border-radius:12px; border:1px solid var(--card-border);
     background:var(--card); color:var(--cream); font-size:13.5px; margin-bottom:10px;
   }
   .note-input::placeholder{color:var(--muted);}
+
+  /* --- carrito --- */
+  .cart{background:var(--card); border:1px solid var(--card-border); border-radius:18px; padding:6px 14px; margin-bottom:10px;}
+  .cart-item{display:flex; align-items:center; justify-content:space-between; padding:12px 0;}
+  .cart-item + .cart-item{border-top:1px solid rgba(255,255,255,.07);}
+  .cart-item .name{font-weight:700; font-size:15px;}
+  .cart-item .desc{font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .stepper{display:flex; align-items:center; gap:12px;}
+  .stepper button{
+    width:32px; height:32px; border-radius:50%; border:1px solid var(--card-border);
+    background:rgba(255,255,255,.06); color:var(--cream); font-size:18px; font-weight:700;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:0;
+  }
+  .stepper button:active{background:rgba(255,255,255,.15);}
+  .stepper .qty{min-width:18px; text-align:center; font-family:'Anton'; font-size:17px;}
+
+  .cart-total{
+    display:flex; justify-content:space-between; align-items:center; padding:12px 4px 4px; font-size:14px; color:var(--muted);
+  }
+  .cart-total .val{font-family:'Anton'; font-size:20px; color:var(--gold-soft);}
+
+  .btn-register{
+    width:100%; padding:16px; border-radius:16px; border:none; cursor:pointer;
+    background:linear-gradient(135deg, var(--gold-soft), var(--gold)); color:var(--bg-deep);
+    font-weight:800; font-size:15.5px; margin:12px 0 20px; transition:transform .08s ease, opacity .15s ease;
+  }
+  .btn-register:active{transform:scale(.98);}
+  .btn-register:disabled{opacity:.4; cursor:default;}
 
   .summary{background:var(--card); border:1px solid var(--card-border); border-radius:16px; padding:14px 16px; margin:8px 0 16px;}
   .summary-row{display:flex; justify-content:space-between; padding:6px 0; font-size:14px;}
@@ -85,35 +99,60 @@
 
   h2.section{
     font-family:'Anton'; font-weight:400; font-size:16px; letter-spacing:.03em;
-    color:var(--gold-soft); text-transform:uppercase; margin:0 0 10px;
+    color:var(--gold-soft); text-transform:uppercase; margin:22px 0 10px;
   }
+
+  /* --- gráficas --- */
+  .donut-wrap{
+    display:flex; align-items:center; gap:18px; background:var(--card); border:1px solid var(--card-border);
+    border-radius:16px; padding:14px 16px; margin-bottom:12px;
+  }
+  .donut{width:104px; height:104px; border-radius:50%; position:relative; flex-shrink:0; transition:background 0.3s ease;}
+  .donut-center{
+    position:absolute; inset:16px; background:var(--bg-deep); border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .dc-val{font-family:'Anton'; font-size:13.5px; color:var(--cream);}
+  .dc-lbl{font-size:8.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:2px;}
+  .donut-legend{flex:1; display:flex; flex-direction:column; gap:9px; font-size:13px;}
+  .legend-item{display:flex; align-items:center; gap:8px; color:var(--muted);}
+  .legend-item b{color:var(--cream); margin-left:auto; font-weight:700;}
+  .swatch{width:10px; height:10px; border-radius:3px; flex-shrink:0;}
+  .swatch.gold{background:var(--gold-soft);}
+  .swatch.red{background:var(--red);}
+
+  .bars-card{background:var(--card); border:1px solid var(--card-border); border-radius:16px; padding:16px; margin-bottom:12px;}
+  .bars-card .bars-title{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;}
+  .bar-row + .bar-row{margin-top:14px;}
+  .bar-label{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-bottom:6px;}
+  .bar-label b{color:var(--cream); font-weight:600;}
+  .bar-track{height:10px; border-radius:6px; background:rgba(255,255,255,.08); overflow:hidden;}
+  .bar-fill{height:100%; border-radius:6px; transition:width .4s ease; width:0%;}
+  .bar-fill.gold{background:linear-gradient(90deg, var(--gold), var(--gold-soft));}
+  .bar-fill.red{background:linear-gradient(90deg, var(--red), #e08a6b);}
+  .bar-fill.grey{background:var(--muted);}
+  .bar-fill.good{background:linear-gradient(90deg, #5c9468, var(--good));}
+
   .hist-item{
-    display:flex; align-items:center; justify-content:space-between; padding:10px 12px;
-    background:var(--card); border:1px solid var(--card-border); border-radius:12px; margin-bottom:8px; font-size:13.5px;
+    background:var(--card); border:1px solid var(--card-border); border-radius:14px; margin-bottom:8px; padding:12px 14px;
   }
-  .hist-item .htype{font-weight:600;}
-  .hist-item .htime{color:var(--muted); font-size:11.5px; margin-top:2px;}
-  .hist-item .hprice{font-weight:700; color:var(--gold-soft);}
-  .hist-del{background:none; border:none; color:#e08a6b; font-size:18px; cursor:pointer; padding:2px 6px; margin-left:8px;}
+  .hist-top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .hist-items-list{font-size:13.5px; font-weight:600; line-height:1.5;}
+  .hist-meta{color:var(--muted); font-size:11.5px; margin-top:3px;}
+  .hist-right{display:flex; align-items:center; flex-shrink:0; margin-left:10px;}
+  .hist-total{font-weight:800; color:var(--gold-soft); font-size:14.5px;}
+  .hist-del{background:none; border:none; color:#e08a6b; font-size:18px; cursor:pointer; padding:2px 4px 2px 8px;}
   .empty{color:var(--muted); font-size:13px; text-align:center; padding:16px 0;}
 
   /* recibo */
-  .receipt-overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,.55); display:none;
-    align-items:flex-end; justify-content:center; z-index:60;
-  }
+  .receipt-overlay{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-end; justify-content:center; z-index:60;}
   .receipt-overlay.show{display:flex;}
-  .receipt-card{
-    width:100%; max-width:460px; background:#fdfaf2; color:#2a2a24; border-radius:22px 22px 0 0;
-    padding:22px 20px 26px; font-family:'Work Sans';
-  }
+  .receipt-card{width:100%; max-width:460px; background:#fdfaf2; color:#2a2a24; border-radius:22px 22px 0 0; padding:22px 20px 26px; font-family:'Work Sans';}
   .receipt-card h3{font-family:'Anton'; font-weight:400; font-size:20px; margin:0 0 4px; color:#1f2e22;}
   .receipt-card .rline{display:flex; justify-content:space-between; font-size:14px; padding:5px 0; border-bottom:1px dashed #d8cfb8;}
   .receipt-card .rtotal{font-weight:800; font-size:17px; margin-top:6px;}
   .receipt-actions{display:flex; gap:10px; margin-top:16px;}
-  .receipt-actions button{
-    flex:1; padding:12px; border-radius:12px; border:none; font-weight:700; cursor:pointer; font-size:13.5px;
-  }
+  .receipt-actions button{flex:1; padding:12px; border-radius:12px; border:none; font-weight:700; cursor:pointer; font-size:13.5px;}
   .btn-wa{background:#25D366; color:#08331b;}
   .btn-close{background:#e7e2d3; color:#2a2a24;}
 
@@ -172,22 +211,35 @@
 
   <input class="note-input" id="compradorInput" type="text" placeholder="Nombre del comprador (opcional)">
 
-  <div class="actions">
-    <button class="btn-sale single" id="btnSingle" onclick="addSale('individual')">
+  <div class="cart">
+    <div class="cart-item">
       <div>
         <div class="name">Combo sencillo</div>
-        <div class="desc">1 copa vidrio + 1 copa plástico</div>
+        <div class="desc">1 vidrio + 1 plástico · $10.000</div>
       </div>
-      <div class="price">$10.000</div>
-    </button>
-    <button class="btn-sale triple" id="btnTriple" onclick="addSale('triple')">
+      <div class="stepper">
+        <button onclick="changeQty('individual',-1)">−</button>
+        <span class="qty" id="qtyIndividual">0</span>
+        <button onclick="changeQty('individual',1)">+</button>
+      </div>
+    </div>
+    <div class="cart-item">
       <div>
         <div class="name">Combo triple</div>
-        <div class="desc">3 copas vidrio + 3 copas plástico</div>
+        <div class="desc">3 vidrio + 3 plástico · $25.000</div>
       </div>
-      <div class="price">$25.000</div>
-    </button>
+      <div class="stepper">
+        <button onclick="changeQty('triple',-1)">−</button>
+        <span class="qty" id="qtyTriple">0</span>
+        <button onclick="changeQty('triple',1)">+</button>
+      </div>
+    </div>
   </div>
+  <div class="cart-total">
+    <span>Subtotal de esta venta</span>
+    <span class="val" id="cartSubtotal">$0</span>
+  </div>
+  <button class="btn-register" id="btnRegister" onclick="registrarVenta()" disabled>Registrar venta</button>
 
   <h2 class="section">Resumen financiero</h2>
   <div class="summary">
@@ -197,6 +249,49 @@
     <div class="summary-row"><span class="lbl">Costo invertido</span><span class="v">$460.000</span></div>
     <div class="summary-row"><span class="lbl">Utilidad hasta ahora</span><span class="v" id="rUtilidad">$0</span></div>
     <div class="summary-row"><span class="lbl">Meta si se vende todo</span><span class="v">$1.335.000 · utilidad $875.000</span></div>
+  </div>
+
+  <h2 class="section">Gráficas</h2>
+
+  <div class="donut-wrap">
+    <div class="donut" id="donutChart">
+      <div class="donut-center">
+        <div class="dc-val" id="donutTotal">$0</div>
+        <div class="dc-lbl">ingresos</div>
+      </div>
+    </div>
+    <div class="donut-legend">
+      <div class="legend-item"><span class="swatch gold"></span>Sencillos <b id="legSencillo">$0</b></div>
+      <div class="legend-item"><span class="swatch red"></span>Triples <b id="legTriple">$0</b></div>
+    </div>
+  </div>
+
+  <div class="bars-card">
+    <div class="bars-title">Copas usadas vs. disponibles</div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Vidrio</span><b id="barVidrioTxt">0 / 150</b></div>
+      <div class="bar-track"><div class="bar-fill gold" id="barVidrioFill"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Plástico</span><b id="barPlasticoTxt">0 / 156</b></div>
+      <div class="bar-track"><div class="bar-fill red" id="barPlasticoFill"></div></div>
+    </div>
+  </div>
+
+  <div class="bars-card">
+    <div class="bars-title">Costo · Ingreso · Utilidad</div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Costo invertido</span><b>$460.000</b></div>
+      <div class="bar-track"><div class="bar-fill grey" style="width:100%"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Ingreso</span><b id="finIngresoTxt">$0</b></div>
+      <div class="bar-track"><div class="bar-fill gold" id="finIngresoFill"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label"><span>Utilidad</span><b id="finUtilidadTxt">$0</b></div>
+      <div class="bar-track"><div class="bar-fill good" id="finUtilidadFill"></div></div>
+    </div>
   </div>
 
   <h2 class="section">Historial de ventas</h2>
@@ -209,7 +304,7 @@
   <div class="receipt-card">
     <h3>Recibo de venta</h3>
     <div class="sub" id="rFecha" style="color:#7a7261; font-size:12px; margin-bottom:10px;"></div>
-    <div class="rline"><span id="rTipoTxt"></span><span id="rValorTxt"></span></div>
+    <div id="rItemsContainer"></div>
     <div class="rline" id="rCompradorLine" style="display:none;"><span>Comprador</span><span id="rCompradorTxt"></span></div>
     <div class="rline rtotal"><span>Total</span><span id="rTotalTxt"></span></div>
     <div class="receipt-actions">
@@ -223,11 +318,13 @@
 
 <script>
 /* ======= CONFIGURA ESTO ======= */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVDCLck8tM8V0CND2Q6AtH5X1jFj2DaDpNxvelg1n5l2h-s2Ig7RZKLA0iU26_esoB/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby43FJz4C3A4EgUzWTzfq0VGZOlIdp56lI-SY5Hl2utj5tKftZFb75s5ZGiAfmbnrcU/exec';
 /* =============================== */
 
+const PRECIOS = { individual: 10000, triple: 25000 };
 let resumen = null;
 let ventas = [];
+let cart = { individual: 0, triple: 0 };
 let lastReceipt = null;
 
 function fmt(n){ return '$' + Math.round(n).toLocaleString('es-CO'); }
@@ -254,16 +351,35 @@ async function cargarDatos(){
   }
 }
 
-async function addSale(tipo){
-  document.getElementById('btnSingle').disabled = true;
-  document.getElementById('btnTriple').disabled = true;
+// ---------- Carrito ----------
+
+function changeQty(tipo, delta){
+  cart[tipo] = Math.max(0, cart[tipo] + delta);
+  updateCartUI();
+}
+
+function updateCartUI(){
+  document.getElementById('qtyIndividual').textContent = cart.individual;
+  document.getElementById('qtyTriple').textContent = cart.triple;
+  const subtotal = cart.individual * PRECIOS.individual + cart.triple * PRECIOS.triple;
+  document.getElementById('cartSubtotal').textContent = fmt(subtotal);
+  document.getElementById('btnRegister').disabled = (cart.individual === 0 && cart.triple === 0);
+}
+
+async function registrarVenta(){
+  const items = [];
+  if(cart.individual > 0) items.push({ tipo:'individual', cantidad:cart.individual });
+  if(cart.triple > 0) items.push({ tipo:'triple', cantidad:cart.triple });
+  if(items.length === 0) return;
+
+  document.getElementById('btnRegister').disabled = true;
   setSync('busy');
   const comprador = document.getElementById('compradorInput').value.trim();
   try{
     const res = await fetch(SCRIPT_URL, {
       method:'POST',
       headers:{ 'Content-Type':'text/plain' }, // evita preflight CORS con Apps Script
-      body: JSON.stringify({ action:'add', tipo, comprador })
+      body: JSON.stringify({ action:'add', items, comprador })
     });
     const data = await res.json();
     if(!data.ok) throw new Error(data.error || 'Error desconocido');
@@ -271,25 +387,25 @@ async function addSale(tipo){
     resumen = data.resumen;
     render();
     setSync('on');
+    mostrarRecibo(items, comprador);
+    cart = { individual:0, triple:0 };
+    updateCartUI();
     document.getElementById('compradorInput').value = '';
-    mostrarRecibo(tipo, comprador);
   }catch(err){
     setSync('off');
     showToast('⚠️ No se guardó la venta, intenta de nuevo');
-  }finally{
-    document.getElementById('btnSingle').disabled = false;
-    document.getElementById('btnTriple').disabled = false;
+    document.getElementById('btnRegister').disabled = false;
   }
 }
 
-async function deleteSale(id){
-  if(!confirm('¿Eliminar esta venta de la hoja?')) return;
+async function deleteSale(grupo){
+  if(!confirm('¿Eliminar esta venta completa de la hoja?')) return;
   setSync('busy');
   try{
     const res = await fetch(SCRIPT_URL, {
       method:'POST',
       headers:{ 'Content-Type':'text/plain' },
-      body: JSON.stringify({ action:'delete', id })
+      body: JSON.stringify({ action:'delete', grupo })
     });
     const data = await res.json();
     ventas = data.ventas;
@@ -301,6 +417,8 @@ async function deleteSale(id){
     showToast('⚠️ No se pudo eliminar');
   }
 }
+
+// ---------- Render ----------
 
 function render(){
   if(!resumen) return;
@@ -327,37 +445,102 @@ function render(){
   fillRect.setAttribute('y', 92 - h);
   fillRect.setAttribute('height', h);
 
-  const listEl = document.getElementById('historyList');
-  if(ventas.length === 0){
-    listEl.innerHTML = '<div class="empty">Todavía no hay ventas registradas.</div>';
+  renderCharts(resumen);
+  renderHistory(ventas);
+}
+
+function renderCharts(r){
+  // Donut: ingresos por tipo de combo
+  const ingresoSencillo = r.sencillos * PRECIOS.individual;
+  const ingresoTriple = r.triples * PRECIOS.triple;
+  const totalDonut = ingresoSencillo + ingresoTriple;
+  const donutEl = document.getElementById('donutChart');
+  if(totalDonut === 0){
+    donutEl.style.background = 'rgba(255,255,255,0.08)';
   }else{
-    const sorted = [...ventas].reverse();
-    listEl.innerHTML = sorted.map(v => {
-      const compradorTxt = v.comprador ? ' · ' + v.comprador : '';
-      return `<div class="hist-item">
-        <div>
-          <div class="htype">Combo ${v.tipo}${compradorTxt}</div>
-          <div class="htime">${v.fecha} ${v.hora}</div>
-        </div>
-        <div style="display:flex; align-items:center;">
-          <span class="hprice">${fmt(v.valor)}</span>
-          <button class="hist-del" onclick="deleteSale('${v.id}')">×</button>
-        </div>
-      </div>`;
-    }).join('');
+    const pctS = (ingresoSencillo / totalDonut) * 100;
+    donutEl.style.background = `conic-gradient(var(--gold-soft) 0% ${pctS}%, var(--red) ${pctS}% 100%)`;
+  }
+  document.getElementById('donutTotal').textContent = fmt(totalDonut);
+  document.getElementById('legSencillo').textContent = fmt(ingresoSencillo);
+  document.getElementById('legTriple').textContent = fmt(ingresoTriple);
+
+  // Barras de inventario
+  const pctVidrio = (r.vidrioVendido / r.totalVidrio) * 100;
+  const pctPlastico = (r.plasticoVendido / r.totalPlastico) * 100;
+  document.getElementById('barVidrioFill').style.width = Math.min(100, pctVidrio) + '%';
+  document.getElementById('barPlasticoFill').style.width = Math.min(100, pctPlastico) + '%';
+  document.getElementById('barVidrioTxt').textContent = r.vidrioVendido + ' / ' + r.totalVidrio;
+  document.getElementById('barPlasticoTxt').textContent = r.plasticoVendido + ' / ' + r.totalPlastico;
+
+  // Barras financieras (escala relativa a la meta de ingreso)
+  const escala = r.metaIngreso;
+  document.getElementById('finIngresoFill').style.width = Math.min(100, (r.ingreso / escala) * 100) + '%';
+  document.getElementById('finIngresoTxt').textContent = fmt(r.ingreso);
+  const utilFill = document.getElementById('finUtilidadFill');
+  const utilTxt = document.getElementById('finUtilidadTxt');
+  utilTxt.textContent = fmt(r.utilidad);
+  if(r.utilidad >= 0){
+    utilFill.className = 'bar-fill good';
+    utilFill.style.width = Math.min(100, (r.utilidad / escala) * 100) + '%';
+  }else{
+    utilFill.className = 'bar-fill red';
+    utilFill.style.width = Math.min(100, (Math.abs(r.utilidad) / r.costoTotal) * 100) + '%';
   }
 }
 
-function mostrarRecibo(tipo, comprador){
-  const esSencillo = tipo === 'individual';
-  const valor = esSencillo ? 10000 : 25000;
-  const desc = esSencillo ? '1 copa vidrio + 1 copa plástico' : '3 copas vidrio + 3 copas plástico';
-  const nombre = esSencillo ? 'Combo sencillo' : 'Combo triple';
+function agruparVentas(lista){
+  const grupos = {};
+  lista.forEach(v => {
+    if(!grupos[v.grupo]){
+      grupos[v.grupo] = { grupo:v.grupo, comprador:v.comprador, fecha:v.fecha, hora:v.hora, items:[], total:0 };
+    }
+    grupos[v.grupo].items.push(v);
+    grupos[v.grupo].total += Number(v.valor) || 0;
+  });
+  return Object.values(grupos).sort((a,b) => (b.fecha+b.hora).localeCompare(a.fecha+a.hora));
+}
 
+function renderHistory(lista){
+  const listEl = document.getElementById('historyList');
+  if(lista.length === 0){
+    listEl.innerHTML = '<div class="empty">Todavía no hay ventas registradas.</div>';
+    return;
+  }
+  const grupos = agruparVentas(lista);
+  listEl.innerHTML = grupos.map(g => {
+    const itemsTxt = g.items.map(i => `${i.cantidad}× Combo ${i.tipo}`).join(' + ');
+    const compradorTxt = g.comprador ? ' · ' + g.comprador : '';
+    return `<div class="hist-item">
+      <div class="hist-top">
+        <div>
+          <div class="hist-items-list">${itemsTxt}</div>
+          <div class="hist-meta">${g.fecha} ${g.hora}${compradorTxt}</div>
+        </div>
+        <div class="hist-right">
+          <span class="hist-total">${fmt(g.total)}</span>
+          <button class="hist-del" onclick="deleteSale('${g.grupo}')">×</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---------- Recibo ----------
+
+function mostrarRecibo(items, comprador){
   document.getElementById('rFecha').textContent = new Date().toLocaleString('es-CO', { dateStyle:'medium', timeStyle:'short' });
-  document.getElementById('rTipoTxt').textContent = nombre + ' — ' + desc;
-  document.getElementById('rValorTxt').textContent = fmt(valor);
-  document.getElementById('rTotalTxt').textContent = fmt(valor);
+
+  let total = 0;
+  const itemsHtml = items.map(i => {
+    const nombre = i.tipo === 'individual' ? 'Combo sencillo' : 'Combo triple';
+    const precio = PRECIOS[i.tipo];
+    const subtotal = precio * i.cantidad;
+    total += subtotal;
+    return `<div class="rline"><span>${i.cantidad}× ${nombre}</span><span>${fmt(subtotal)}</span></div>`;
+  }).join('');
+  document.getElementById('rItemsContainer').innerHTML = itemsHtml;
+  document.getElementById('rTotalTxt').textContent = fmt(total);
 
   const compLine = document.getElementById('rCompradorLine');
   if(comprador){
@@ -367,7 +550,7 @@ function mostrarRecibo(tipo, comprador){
     compLine.style.display = 'none';
   }
 
-  lastReceipt = { nombre, desc, valor, comprador };
+  lastReceipt = { items, comprador, total };
   document.getElementById('receiptOverlay').classList.add('show');
 }
 
@@ -377,10 +560,15 @@ function cerrarRecibo(){
 
 function enviarWhatsapp(){
   if(!lastReceipt) return;
+  const lineas = lastReceipt.items.map(i => {
+    const nombre = i.tipo === 'individual' ? 'Combo sencillo' : 'Combo triple';
+    const subtotal = PRECIOS[i.tipo] * i.cantidad;
+    return `${i.cantidad}× ${nombre} — ${fmt(subtotal)}`;
+  }).join('\n');
   const texto =
 `🥃 *Recibo de compra*
-${lastReceipt.nombre} — ${lastReceipt.desc}
-Total: ${fmt(lastReceipt.valor)}
+${lineas}
+Total: ${fmt(lastReceipt.total)}
 ${lastReceipt.comprador ? 'Cliente: ' + lastReceipt.comprador : ''}
 ¡Gracias por tu compra! 🎉`;
   const url = 'https://wa.me/?text=' + encodeURIComponent(texto);
@@ -396,6 +584,7 @@ function showToast(msg){
   toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
 }
 
+updateCartUI();
 cargarDatos();
 </script>
 </body>
