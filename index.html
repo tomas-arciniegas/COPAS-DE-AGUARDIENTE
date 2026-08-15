@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Control de Ventas — Copas</title>
+<title>Copas Manzanares — Ventas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -147,12 +147,27 @@
   /* recibo */
   .receipt-overlay{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-end; justify-content:center; z-index:60;}
   .receipt-overlay.show{display:flex;}
-  .receipt-card{width:100%; max-width:460px; background:#fdfaf2; color:#2a2a24; border-radius:22px 22px 0 0; padding:22px 20px 26px; font-family:'Work Sans';}
-  .receipt-card h3{font-family:'Anton'; font-weight:400; font-size:20px; margin:0 0 4px; color:#1f2e22;}
-  .receipt-card .rline{display:flex; justify-content:space-between; font-size:14px; padding:5px 0; border-bottom:1px dashed #d8cfb8;}
-  .receipt-card .rtotal{font-weight:800; font-size:17px; margin-top:6px;}
-  .receipt-actions{display:flex; gap:10px; margin-top:16px;}
-  .receipt-actions button{flex:1; padding:12px; border-radius:12px; border:none; font-weight:700; cursor:pointer; font-size:13.5px;}
+  .receipt-card{
+    width:100%; max-width:460px; background:#fdfaf2; color:#2a2a24; border-radius:22px 22px 0 0;
+    padding:26px 24px 28px; font-family:'Work Sans'; position:relative; overflow:hidden;
+  }
+  .receipt-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:5px;
+    background:repeating-linear-gradient(90deg, var(--gold) 0 10px, var(--red) 10px 20px);
+  }
+  .receipt-brand{text-align:center; margin-bottom:2px;}
+  .receipt-brand .rb-name{
+    font-family:Georgia, 'Anton', serif; font-weight:700; font-size:21px; letter-spacing:.04em;
+    color:#1f2e22; text-transform:uppercase;
+  }
+  .receipt-brand .rb-tag{font-size:11px; color:#a89a6f; letter-spacing:.08em; text-transform:uppercase; margin-top:2px;}
+  .receipt-card #rFecha{text-align:center; color:#a89a6f; font-size:12px; margin:10px 0 14px;}
+  .receipt-divider{border:none; border-top:1.5px dashed #d8cfb8; margin:8px 0;}
+  .receipt-card .rline{display:flex; justify-content:space-between; font-size:14px; padding:6px 0; border-bottom:1px dashed #e7ddc4;}
+  .receipt-card .rtotal{font-weight:800; font-size:18px; margin-top:8px; border-bottom:none; padding-top:10px;}
+  .receipt-footer{text-align:center; font-family:Georgia, serif; font-style:italic; color:#a89a6f; font-size:13px; margin-top:16px;}
+  .receipt-actions{display:flex; gap:10px; margin-top:18px;}
+  .receipt-actions button{flex:1; padding:13px; border-radius:12px; border:none; font-weight:700; cursor:pointer; font-size:13.5px;}
   .btn-wa{background:#25D366; color:#08331b;}
   .btn-close{background:#e7e2d3; color:#2a2a24;}
 
@@ -169,8 +184,8 @@
 <div class="wrap">
 
   <header>
-    <div class="eyebrow">Copas al parqueadero 🥃</div>
-    <h1>Caja del combo</h1>
+    <div class="eyebrow">🥃 Registro de ventas</div>
+    <h1>Copas Manzanares</h1>
     <div class="sub">Conectado a la hoja de cálculo — todo queda registrado ahí</div>
     <div class="sync-badge"><span class="dot" id="syncDot"></span><span id="syncTxt">Conectando…</span></div>
   </header>
@@ -302,13 +317,18 @@
 
 <div class="receipt-overlay" id="receiptOverlay">
   <div class="receipt-card">
-    <h3>Recibo de venta</h3>
-    <div class="sub" id="rFecha" style="color:#7a7261; font-size:12px; margin-bottom:10px;"></div>
+    <div class="receipt-brand">
+      <div class="rb-name">Copas Manzanares</div>
+      <div class="rb-tag">Combos de aguardiente</div>
+    </div>
+    <div id="rFecha"></div>
+    <hr class="receipt-divider">
     <div id="rItemsContainer"></div>
-    <div class="rline" id="rCompradorLine" style="display:none;"><span>Comprador</span><span id="rCompradorTxt"></span></div>
+    <div class="rline" id="rCompradorLine" style="display:none;"><span>Cliente</span><span id="rCompradorTxt"></span></div>
     <div class="rline rtotal"><span>Total</span><span id="rTotalTxt"></span></div>
+    <div class="receipt-footer">¡Gracias por tu compra! 🥃</div>
     <div class="receipt-actions">
-      <button class="btn-wa" onclick="enviarWhatsapp()">📲 Enviar por WhatsApp</button>
+      <button class="btn-wa" id="btnCompartir" onclick="compartirRecibo()">📤 Compartir recibo</button>
       <button class="btn-close" onclick="cerrarRecibo()">Cerrar</button>
     </div>
   </div>
@@ -318,7 +338,7 @@
 
 <script>
 /* ======= CONFIGURA ESTO ======= */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby43FJz4C3A4EgUzWTzfq0VGZOlIdp56lI-SY5Hl2utj5tKftZFb75s5ZGiAfmbnrcU/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydQAQyUQ1ioAKxnwhF3dGS7tFVq8cVjQ7CHS6kfVqgdavUbwZ8k_J_tnhGj9SVDd-M/exec';
 /* =============================== */
 
 const PRECIOS = { individual: 10000, triple: 25000 };
@@ -529,7 +549,8 @@ function renderHistory(lista){
 // ---------- Recibo ----------
 
 function mostrarRecibo(items, comprador){
-  document.getElementById('rFecha').textContent = new Date().toLocaleString('es-CO', { dateStyle:'medium', timeStyle:'short' });
+  const fechaTxt = new Date().toLocaleString('es-CO', { dateStyle:'medium', timeStyle:'short' });
+  document.getElementById('rFecha').textContent = fechaTxt;
 
   let total = 0;
   const itemsHtml = items.map(i => {
@@ -550,7 +571,7 @@ function mostrarRecibo(items, comprador){
     compLine.style.display = 'none';
   }
 
-  lastReceipt = { items, comprador, total };
+  lastReceipt = { items, comprador, total, fechaTxt };
   document.getElementById('receiptOverlay').classList.add('show');
 }
 
@@ -558,21 +579,140 @@ function cerrarRecibo(){
   document.getElementById('receiptOverlay').classList.remove('show');
 }
 
-function enviarWhatsapp(){
+// Dibuja el recibo como una imagen tipo ticket de papel
+function generarReciboCanvas(receipt){
+  const lineas = receipt.items.map(i => {
+    const nombre = i.tipo === 'individual' ? 'Sencillo' : 'Triple';
+    return { label: `${i.cantidad}× Combo ${nombre}`, value: fmt(PRECIOS[i.tipo] * i.cantidad) };
+  });
+
+  const width = 380;
+  const lineHeight = 26;
+  const headerHeight = 118;
+  const itemsHeight = lineas.length * lineHeight;
+  const footerHeight = receipt.comprador ? 132 : 108;
+  const height = headerHeight + itemsHeight + footerHeight;
+  const scale = 2; // para que se vea nítido en el celular
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width * scale;
+  canvas.height = height * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+
+  // papel
+  ctx.fillStyle = '#fdfaf2';
+  ctx.fillRect(0, 0, width, height);
+  ctx.strokeStyle = '#e5dcc3';
+  ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
+
+  // franja superior dorado/rojo
+  const stripe = 10;
+  for(let x = 0; x < width; x += stripe * 2){
+    ctx.fillStyle = '#d8a93b';
+    ctx.fillRect(x, 0, stripe, 5);
+    ctx.fillStyle = '#c23b33';
+    ctx.fillRect(x + stripe, 0, stripe, 5);
+  }
+
+  const dashedLine = (y) => {
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = '#d8cfb8';
+    ctx.beginPath();
+    ctx.moveTo(20, y);
+    ctx.lineTo(width - 20, y);
+    ctx.stroke();
+    ctx.restore();
+  };
+
+  let y = 34;
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#1f2e22';
+  ctx.font = '700 22px Georgia, serif';
+  ctx.fillText('COPAS MANZANARES', width / 2, y);
+  y += 20;
+  ctx.font = '400 11px Arial';
+  ctx.fillStyle = '#a89a6f';
+  ctx.fillText('COMBOS DE AGUARDIENTE', width / 2, y);
+  y += 22;
+  ctx.fillText(receipt.fechaTxt, width / 2, y);
+  y += 16;
+
+  dashedLine(y);
+  y += 26;
+
+  ctx.font = '600 14px Arial';
+  lineas.forEach(l => {
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#2a2a24';
+    ctx.fillText(l.label, 24, y);
+    ctx.textAlign = 'right';
+    ctx.fillText(l.value, width - 24, y);
+    y += lineHeight;
+  });
+
+  dashedLine(y);
+  y += 26;
+
+  if(receipt.comprador){
+    ctx.textAlign = 'left';
+    ctx.font = '400 12px Arial';
+    ctx.fillStyle = '#a89a6f';
+    ctx.fillText('Cliente: ' + receipt.comprador, 24, y);
+    y += 24;
+  }
+
+  ctx.textAlign = 'left';
+  ctx.font = '800 18px Arial';
+  ctx.fillStyle = '#1f2e22';
+  ctx.fillText('TOTAL', 24, y);
+  ctx.textAlign = 'right';
+  ctx.fillText(fmt(receipt.total), width - 24, y);
+  y += 34;
+
+  ctx.textAlign = 'center';
+  ctx.font = 'italic 14px Georgia, serif';
+  ctx.fillStyle = '#a89a6f';
+  ctx.fillText('¡Gracias por tu compra! 🥃', width / 2, y);
+
+  return canvas;
+}
+
+function compartirRecibo(){
   if(!lastReceipt) return;
-  const lineas = lastReceipt.items.map(i => {
-    const nombre = i.tipo === 'individual' ? 'Combo sencillo' : 'Combo triple';
-    const subtotal = PRECIOS[i.tipo] * i.cantidad;
-    return `${i.cantidad}× ${nombre} — ${fmt(subtotal)}`;
-  }).join('\n');
-  const texto =
-`🥃 *Recibo de compra*
-${lineas}
-Total: ${fmt(lastReceipt.total)}
-${lastReceipt.comprador ? 'Cliente: ' + lastReceipt.comprador : ''}
-¡Gracias por tu compra! 🎉`;
-  const url = 'https://wa.me/?text=' + encodeURIComponent(texto);
-  window.open(url, '_blank');
+  const btn = document.getElementById('btnCompartir');
+  btn.disabled = true;
+  const canvas = generarReciboCanvas(lastReceipt);
+
+  canvas.toBlob(async (blob) => {
+    btn.disabled = false;
+    const file = new File([blob], 'recibo-copas-manzanares.png', { type: 'image/png' });
+
+    if(navigator.canShare && navigator.canShare({ files: [file] })){
+      try{
+        await navigator.share({ files: [file], title: 'Recibo Copas Manzanares' });
+        return;
+      }catch(e){
+        // el usuario canceló el panel de compartir, no hacemos nada más
+        return;
+      }
+    }
+
+    // Si el celular no soporta compartir imágenes: la descargamos y abrimos WhatsApp con el texto
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'recibo-copas-manzanares.png';
+    link.click();
+    showToast('📥 Recibo guardado — adjúntalo en el chat de WhatsApp');
+
+    const lineas = lastReceipt.items.map(i => {
+      const nombre = i.tipo === 'individual' ? 'Combo sencillo' : 'Combo triple';
+      return `${i.cantidad}× ${nombre} — ${fmt(PRECIOS[i.tipo] * i.cantidad)}`;
+    }).join('\n');
+    const texto = `🥃 *Copas Manzanares*\n${lineas}\nTotal: ${fmt(lastReceipt.total)}${lastReceipt.comprador ? '\nCliente: ' + lastReceipt.comprador : ''}`;
+    setTimeout(() => window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank'), 900);
+  }, 'image/png');
 }
 
 let toastTimer;
