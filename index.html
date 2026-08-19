@@ -152,7 +152,7 @@
   .bar-fill.good{background:linear-gradient(90deg, #5c9468, var(--good));}
 
   /* --- gastos --- */
-  .gasto-form{display:flex; gap:8px; margin-bottom:12px;}
+  .gasto-form{display:flex; gap:8px; margin-bottom:10px;}
   .gasto-form input{
     border-radius:12px; border:1px solid var(--card-border); background:var(--card); color:var(--cream);
     padding:11px 12px; font-size:13px;
@@ -163,12 +163,24 @@
     padding:0 16px; border-radius:12px; border:none; background:linear-gradient(135deg, var(--gold-soft), var(--gold));
     color:var(--bg-deep); font-weight:700; cursor:pointer; font-size:13px;
   }
+  .gasto-check{
+    display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted);
+    background:var(--card); border:1px solid var(--card-border); border-radius:12px;
+    padding:10px 12px; margin-bottom:8px; cursor:pointer;
+  }
+  .gasto-check input{width:16px; height:16px; flex-shrink:0; accent-color:var(--gold);}
+  #gastoCopasFields{display:none; margin-bottom:8px;}
+  #gastoCopasFields .toggle-row{margin-bottom:8px;}
+  #gastoCopasFields .toggle-btn{font-size:12.5px; padding:9px;}
+  #gastoCopasFields .note-input{margin-bottom:0;}
+  .plan-hint{font-size:11.5px; color:var(--muted); margin:-2px 0 12px; text-align:center;}
 
   /* --- historial --- */
   .hist-item{background:var(--card); border:1px solid var(--card-border); border-radius:14px; margin-bottom:8px; padding:12px 14px;}
   .hist-top{display:flex; justify-content:space-between; align-items:flex-start;}
   .hist-items-list{font-size:13.5px; font-weight:600; line-height:1.5;}
   .hist-meta{color:var(--muted); font-size:11.5px; margin-top:3px;}
+  .hist-extra{color:var(--gold-soft); font-size:11.5px; margin-top:3px; font-weight:600;}
   .hist-right{display:flex; align-items:center; flex-shrink:0; margin-left:10px;}
   .hist-total{font-weight:800; color:var(--gold-soft); font-size:14.5px;}
   .hist-del{background:none; border:none; color:#e08a6b; font-size:18px; cursor:pointer; padding:2px 4px 2px 8px;}
@@ -249,7 +261,7 @@
     </svg>
     <div class="bottle-stats">
       <div class="amount" id="ingresoActual">$0</div>
-      <div class="goal">cobrado de la meta $1.335.000</div>
+      <div class="goal">cobrado de la meta <span id="metaGoalTxt">$0</span></div>
       <div class="pct" id="pctTxt">0% recaudado</div>
     </div>
   </div>
@@ -257,11 +269,11 @@
   <div class="grid2">
     <div class="inv-card" id="cardVidrio">
       <div class="label">Vidrio restante</div>
-      <div class="val" id="vidrioRestante">150 <small>/ 150</small></div>
+      <div class="val" id="vidrioRestante">0 <small>/ 0</small></div>
     </div>
     <div class="inv-card" id="cardPlastico">
       <div class="label">Plástico restante</div>
-      <div class="val" id="plasticoRestante">156 <small>/ 156</small></div>
+      <div class="val" id="plasticoRestante">0 <small>/ 0</small></div>
     </div>
   </div>
 
@@ -312,6 +324,8 @@
   <div class="summary">
     <div class="summary-row"><span class="lbl">Vendidos — sencillos</span><span class="v" id="rCountSingle">0</span></div>
     <div class="summary-row"><span class="lbl">Vendidos — triples</span><span class="v" id="rCountTriple">0</span></div>
+    <div class="summary-row"><span class="lbl">Plan de venta — sencillos</span><span class="v" id="rPlanSencillo">0</span></div>
+    <div class="summary-row"><span class="lbl">Plan de venta — triples</span><span class="v" id="rPlanTriple">0</span></div>
     <div class="summary-row"><span class="lbl">Ingreso total (cobrado + fiado)</span><span class="v" id="rIngresoTotal">$0</span></div>
     <div class="summary-row sub"><span class="lbl">↳ Efectivo</span><span class="v" id="rEfectivo">$0</span></div>
     <div class="summary-row sub"><span class="lbl">↳ Transferencia</span><span class="v" id="rTransferencia">$0</span></div>
@@ -329,6 +343,18 @@
     <input id="gastoValor" type="number" placeholder="$" min="0">
     <button onclick="agregarGasto()">Agregar</button>
   </div>
+  <label class="gasto-check">
+    <input type="checkbox" id="gastoEsCopas" onchange="toggleGastoCopas()">
+    📦 Este gasto es una compra de más copas (aumenta el plan y la meta)
+  </label>
+  <div id="gastoCopasFields">
+    <div class="toggle-row">
+      <button type="button" class="toggle-btn active" id="gcTipoIndividual" onclick="setGastoComboTipo('individual')">Para sencillos</button>
+      <button type="button" class="toggle-btn" id="gcTipoTriple" onclick="setGastoComboTipo('triple')">Para triples</button>
+    </div>
+    <input class="note-input" id="gastoComboCantidad" type="number" min="1" placeholder="¿Cuántos combos adicionales permite esta compra?">
+  </div>
+  <div class="plan-hint">El plan de venta y la meta se recalculan solos según lo que agregues aquí.</div>
   <div id="gastosList"><div class="empty">Sin gastos adicionales.</div></div>
 
   <h2 class="section">Gráficas</h2>
@@ -361,13 +387,13 @@
   </div>
 
   <div class="bars-card">
-    <div class="bars-title">Copas usadas vs. disponibles</div>
+    <div class="bars-title">Copas usadas vs. disponibles (según el plan)</div>
     <div class="bar-row">
-      <div class="bar-label"><span>Vidrio</span><b id="barVidrioTxt">0 / 150</b></div>
+      <div class="bar-label"><span>Vidrio</span><b id="barVidrioTxt">0 / 0</b></div>
       <div class="bar-track"><div class="bar-fill gold" id="barVidrioFill"></div></div>
     </div>
     <div class="bar-row">
-      <div class="bar-label"><span>Plástico</span><b id="barPlasticoTxt">0 / 156</b></div>
+      <div class="bar-label"><span>Plástico</span><b id="barPlasticoTxt">0 / 0</b></div>
       <div class="bar-track"><div class="bar-fill red" id="barPlasticoFill"></div></div>
     </div>
   </div>
@@ -430,6 +456,7 @@ let pagoEstado = 'pagado';   // 'pagado' | 'debe'
 let metodoPago = 'efectivo'; // 'efectivo' | 'transferencia'
 let editingGrupo = null;
 let lastReceipt = null;
+let gastoComboTipoSel = 'individual'; // 'individual' | 'triple' — para compras de copas
 
 function fmt(n){ return '$' + Math.round(n).toLocaleString('es-CO'); }
 
@@ -597,15 +624,35 @@ async function marcarPagada(grupo, metodo){
 
 // ---------- Gastos adicionales ----------
 
+function toggleGastoCopas(){
+  const checked = document.getElementById('gastoEsCopas').checked;
+  document.getElementById('gastoCopasFields').style.display = checked ? 'block' : 'none';
+}
+
+function setGastoComboTipo(tipo){
+  gastoComboTipoSel = tipo;
+  document.getElementById('gcTipoIndividual').classList.toggle('active', tipo === 'individual');
+  document.getElementById('gcTipoTriple').classList.toggle('active', tipo === 'triple');
+}
+
 async function agregarGasto(){
   const desc = document.getElementById('gastoDesc').value.trim();
   const valor = Number(document.getElementById('gastoValor').value);
   if(!desc || !valor || valor <= 0){ showToast('Escribe una descripción y un valor válido'); return; }
+
+  const esCopas = document.getElementById('gastoEsCopas').checked;
+  const comboTipo = esCopas ? gastoComboTipoSel : '';
+  const comboCantidad = esCopas ? Number(document.getElementById('gastoComboCantidad').value) : 0;
+  if(esCopas && (!comboCantidad || comboCantidad <= 0)){
+    showToast('Indica cuántos combos adicionales permite esta compra');
+    return;
+  }
+
   setSync('busy');
   try{
     const res = await fetch(SCRIPT_URL, {
       method:'POST', headers:{ 'Content-Type':'text/plain' },
-      body: JSON.stringify({ action:'addGasto', descripcion:desc, valor })
+      body: JSON.stringify({ action:'addGasto', descripcion:desc, valor, comboTipo, comboCantidad })
     });
     const data = await res.json();
     if(!data.ok) throw new Error(data.error);
@@ -614,7 +661,11 @@ async function agregarGasto(){
     setSync('on');
     document.getElementById('gastoDesc').value = '';
     document.getElementById('gastoValor').value = '';
-    showToast('Gasto agregado');
+    document.getElementById('gastoEsCopas').checked = false;
+    document.getElementById('gastoComboCantidad').value = '';
+    setGastoComboTipo('individual');
+    toggleGastoCopas();
+    showToast(esCopas ? '✅ Gasto y copas agregadas al plan' : 'Gasto agregado');
   }catch(err){
     setSync('off');
     showToast('⚠️ No se pudo agregar el gasto');
@@ -646,6 +697,7 @@ function render(){
   const pct = Math.min(100, (resumen.ingresoCobrado / resumen.metaIngreso) * 100);
 
   document.getElementById('ingresoActual').textContent = fmt(resumen.ingresoCobrado);
+  document.getElementById('metaGoalTxt').textContent = fmt(resumen.metaIngreso);
   document.getElementById('pctTxt').textContent = pct.toFixed(0) + '% recaudado';
 
   document.getElementById('vidrioRestante').innerHTML = resumen.vidrioRestante + ' <small>/ ' + resumen.totalVidrio + '</small>';
@@ -661,6 +713,8 @@ function render(){
 
   document.getElementById('rCountSingle').textContent = resumen.sencillos;
   document.getElementById('rCountTriple').textContent = resumen.triples;
+  document.getElementById('rPlanSencillo').textContent = resumen.sencillosPlan;
+  document.getElementById('rPlanTriple').textContent = resumen.triplesPlan;
   document.getElementById('rIngresoTotal').textContent = fmt(resumen.ingresoTotal);
   document.getElementById('rEfectivo').textContent = fmt(resumen.efectivo);
   document.getElementById('rTransferencia').textContent = fmt(resumen.transferencia);
@@ -709,14 +763,14 @@ function renderCharts(r){
   document.getElementById('legTransferencia').textContent = fmt(r.transferencia);
   document.getElementById('legPendiente').textContent = fmt(r.ingresoPendiente);
 
-  // Barras de inventario
+  // Barras de inventario (contra el total del plan, que puede crecer)
   document.getElementById('barVidrioFill').style.width = Math.min(100, (r.vidrioVendido/r.totalVidrio)*100) + '%';
   document.getElementById('barPlasticoFill').style.width = Math.min(100, (r.plasticoVendido/r.totalPlastico)*100) + '%';
   document.getElementById('barVidrioTxt').textContent = r.vidrioVendido + ' / ' + r.totalVidrio;
   document.getElementById('barPlasticoTxt').textContent = r.plasticoVendido + ' / ' + r.totalPlastico;
 
-  // Barras financieras (escala relativa a la meta de ingreso)
-  const escala = r.metaIngreso;
+  // Barras financieras (escala relativa a la meta de ingreso, que ahora es dinámica)
+  const escala = r.metaIngreso || 1;
   document.getElementById('finCostoFill').style.width = Math.min(100, (r.costoTotal/escala)*100) + '%';
   document.getElementById('finCostoTxt').textContent = fmt(r.costoTotal);
 
@@ -789,19 +843,25 @@ function renderGastos(lista){
     el.innerHTML = '<div class="empty">Sin gastos adicionales.</div>';
     return;
   }
-  el.innerHTML = [...lista].reverse().map(g => `
+  el.innerHTML = [...lista].reverse().map(g => {
+    const extraTxt = g.comboTipo
+      ? `<div class="hist-extra">📦 +${g.comboCantidad} combo${g.comboCantidad === 1 ? '' : 's'} ${g.comboTipo === 'individual' ? 'sencillos' : 'triples'} al plan</div>`
+      : '';
+    return `
     <div class="hist-item">
       <div class="hist-top">
         <div>
           <div class="hist-items-list">${g.descripcion}</div>
           <div class="hist-meta">${g.fecha} ${g.hora}</div>
+          ${extraTxt}
         </div>
         <div class="hist-right">
           <span class="hist-total">${fmt(g.valor)}</span>
           <button class="hist-del" onclick="eliminarGasto('${g.id}')">×</button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ---------- Recibo ----------
