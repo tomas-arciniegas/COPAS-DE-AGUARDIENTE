@@ -76,6 +76,18 @@
   .stepper button:active{background:rgba(255,255,255,.15);}
   .stepper .qty{min-width:18px; text-align:center; font-family:'Anton'; font-size:17px;}
 
+  /* --- selector de pago --- */
+  .toggle-row{display:flex; gap:8px; margin-bottom:10px;}
+  .toggle-btn{
+    flex:1; padding:11px; border-radius:12px; border:1px solid var(--card-border);
+    background:var(--card); color:var(--muted); font-weight:700; font-size:13px; cursor:pointer;
+    transition:all .15s ease;
+  }
+  .toggle-btn.active{background:linear-gradient(135deg, var(--gold-soft), var(--gold)); color:var(--bg-deep); border-color:transparent;}
+  .toggle-btn.active.debe{background:linear-gradient(135deg, #e6b567, var(--red)); color:var(--cream);}
+  #metodoSelector{display:flex; gap:8px; margin-bottom:10px;}
+  #metodoSelector .toggle-btn{font-size:12.5px; padding:9px;}
+
   .cart-total{
     display:flex; justify-content:space-between; align-items:center; padding:12px 4px 4px; font-size:14px; color:var(--muted);
   }
@@ -84,14 +96,19 @@
   .btn-register{
     width:100%; padding:16px; border-radius:16px; border:none; cursor:pointer;
     background:linear-gradient(135deg, var(--gold-soft), var(--gold)); color:var(--bg-deep);
-    font-weight:800; font-size:15.5px; margin:12px 0 20px; transition:transform .08s ease, opacity .15s ease;
+    font-weight:800; font-size:15.5px; margin:12px 0 4px; transition:transform .08s ease, opacity .15s ease;
   }
   .btn-register:active{transform:scale(.98);}
   .btn-register:disabled{opacity:.4; cursor:default;}
+  .cancel-edit{
+    display:none; text-align:center; color:var(--muted); font-size:12.5px; text-decoration:underline;
+    cursor:pointer; margin:0 0 18px;
+  }
 
   .summary{background:var(--card); border:1px solid var(--card-border); border-radius:16px; padding:14px 16px; margin:8px 0 16px;}
   .summary-row{display:flex; justify-content:space-between; padding:6px 0; font-size:14px;}
   .summary-row + .summary-row{border-top:1px solid rgba(255,255,255,.06);}
+  .summary-row.sub .lbl{padding-left:10px; font-size:12.5px;}
   .summary-row .lbl{color:var(--muted);}
   .summary-row .v{font-weight:600;}
   .summary-row .v.pos{color:var(--good);}
@@ -112,14 +129,15 @@
     position:absolute; inset:16px; background:var(--bg-deep); border-radius:50%;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
   }
-  .dc-val{font-family:'Anton'; font-size:13.5px; color:var(--cream);}
-  .dc-lbl{font-size:8.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:2px;}
+  .dc-val{font-family:'Anton'; font-size:12.5px; color:var(--cream);}
+  .dc-lbl{font-size:8px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:2px;}
   .donut-legend{flex:1; display:flex; flex-direction:column; gap:9px; font-size:13px;}
   .legend-item{display:flex; align-items:center; gap:8px; color:var(--muted);}
   .legend-item b{color:var(--cream); margin-left:auto; font-weight:700;}
   .swatch{width:10px; height:10px; border-radius:3px; flex-shrink:0;}
   .swatch.gold{background:var(--gold-soft);}
   .swatch.red{background:var(--red);}
+  .swatch.grey{background:var(--muted);}
 
   .bars-card{background:var(--card); border:1px solid var(--card-border); border-radius:16px; padding:16px; margin-bottom:12px;}
   .bars-card .bars-title{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;}
@@ -133,16 +151,47 @@
   .bar-fill.grey{background:var(--muted);}
   .bar-fill.good{background:linear-gradient(90deg, #5c9468, var(--good));}
 
-  .hist-item{
-    background:var(--card); border:1px solid var(--card-border); border-radius:14px; margin-bottom:8px; padding:12px 14px;
+  /* --- gastos --- */
+  .gasto-form{display:flex; gap:8px; margin-bottom:12px;}
+  .gasto-form input{
+    border-radius:12px; border:1px solid var(--card-border); background:var(--card); color:var(--cream);
+    padding:11px 12px; font-size:13px;
   }
+  .gasto-form input#gastoDesc{flex:2;}
+  .gasto-form input#gastoValor{flex:1; min-width:0;}
+  .gasto-form button{
+    padding:0 16px; border-radius:12px; border:none; background:linear-gradient(135deg, var(--gold-soft), var(--gold));
+    color:var(--bg-deep); font-weight:700; cursor:pointer; font-size:13px;
+  }
+
+  /* --- historial --- */
+  .hist-item{background:var(--card); border:1px solid var(--card-border); border-radius:14px; margin-bottom:8px; padding:12px 14px;}
   .hist-top{display:flex; justify-content:space-between; align-items:flex-start;}
   .hist-items-list{font-size:13.5px; font-weight:600; line-height:1.5;}
   .hist-meta{color:var(--muted); font-size:11.5px; margin-top:3px;}
   .hist-right{display:flex; align-items:center; flex-shrink:0; margin-left:10px;}
   .hist-total{font-weight:800; color:var(--gold-soft); font-size:14.5px;}
   .hist-del{background:none; border:none; color:#e08a6b; font-size:18px; cursor:pointer; padding:2px 4px 2px 8px;}
+  .hist-edit{background:none; border:none; color:var(--gold-soft); font-size:14px; cursor:pointer; padding:2px 4px;}
   .empty{color:var(--muted); font-size:13px; text-align:center; padding:16px 0;}
+
+  .badge{display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; margin-top:6px;}
+  .badge.pagado{background:rgba(125,184,132,.18); color:var(--good);}
+  .badge.debe{background:rgba(224,138,107,.18); color:#e08a6b;}
+
+  .pago-actions{display:flex; gap:6px; margin-top:8px;}
+  .pago-actions button{
+    flex:1; padding:7px; border-radius:10px; border:1px solid var(--card-border); background:rgba(255,255,255,.05);
+    color:var(--cream); font-size:11.5px; font-weight:600; cursor:pointer;
+  }
+
+  .reset-btn{display:block; margin:26px auto 0; background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer;}
+  .toast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--gold); color:var(--bg-deep);
+    font-weight:700; font-size:13.5px; padding:10px 18px; border-radius:30px; opacity:0; pointer-events:none;
+    transition:opacity .25s ease, bottom .25s ease; box-shadow:0 6px 18px rgba(0,0,0,.35); z-index:70; max-width:85%; text-align:center;
+  }
+  .toast.show{opacity:1; bottom:34px;}
 
   /* recibo */
   .receipt-overlay{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-end; justify-content:center; z-index:60;}
@@ -170,19 +219,6 @@
   .receipt-actions button{flex:1; padding:13px; border-radius:12px; border:none; font-weight:700; cursor:pointer; font-size:13.5px;}
   .btn-wa{background:#25D366; color:#08331b;}
   .btn-close{background:#e7e2d3; color:#2a2a24;}
-
-  .reset-btn{display:block; margin:26px auto 0; background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer;}
-  .toast{
-    position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--gold); color:var(--bg-deep);
-    font-weight:700; font-size:13.5px; padding:10px 18px; border-radius:30px; opacity:0; pointer-events:none;
-    transition:opacity .25s ease, bottom .25s ease; box-shadow:0 6px 18px rgba(0,0,0,.35); z-index:70; max-width:85%; text-align:center;
-  }
-  .toast.show{opacity:1; bottom:34px;}
-  .debug-box{
-    max-width:460px; margin:14px auto 0; background:#2a0f0f; border:1px solid #7a2d2d; border-radius:12px;
-    padding:12px 14px; font-size:11.5px; color:#f5c9c9; font-family:monospace; white-space:pre-wrap; word-break:break-word; display:none;
-  }
-  .debug-box.show{display:block;}
 </style>
 </head>
 <body>
@@ -213,7 +249,7 @@
     </svg>
     <div class="bottle-stats">
       <div class="amount" id="ingresoActual">$0</div>
-      <div class="goal">de la meta $1.335.000</div>
+      <div class="goal">cobrado de la meta $1.335.000</div>
       <div class="pct" id="pctTxt">0% recaudado</div>
     </div>
   </div>
@@ -255,36 +291,72 @@
       </div>
     </div>
   </div>
+
+  <div class="toggle-row">
+    <button class="toggle-btn active" id="btnPagado" onclick="setEstado('pagado')">💵 Ya pagó</button>
+    <button class="toggle-btn debe" id="btnDebe" onclick="setEstado('debe')">🕒 Debe (fiado)</button>
+  </div>
+  <div id="metodoSelector">
+    <button class="toggle-btn active" id="btnEfectivo" onclick="setMetodo('efectivo')">Efectivo</button>
+    <button class="toggle-btn" id="btnTransferencia" onclick="setMetodo('transferencia')">Transferencia</button>
+  </div>
+
   <div class="cart-total">
     <span>Subtotal de esta venta</span>
     <span class="val" id="cartSubtotal">$0</span>
   </div>
   <button class="btn-register" id="btnRegister" onclick="registrarVenta()" disabled>Registrar venta</button>
-
-  <div class="debug-box" id="debugBox"></div>
+  <div class="cancel-edit" id="cancelEditBtn" onclick="cancelarEdicion()">Cancelar edición</div>
 
   <h2 class="section">Resumen financiero</h2>
   <div class="summary">
     <div class="summary-row"><span class="lbl">Vendidos — sencillos</span><span class="v" id="rCountSingle">0</span></div>
     <div class="summary-row"><span class="lbl">Vendidos — triples</span><span class="v" id="rCountTriple">0</span></div>
-    <div class="summary-row"><span class="lbl">Ingreso acumulado</span><span class="v" id="rIngreso">$0</span></div>
-    <div class="summary-row"><span class="lbl">Costo invertido</span><span class="v">$460.000</span></div>
-    <div class="summary-row"><span class="lbl">Utilidad hasta ahora</span><span class="v" id="rUtilidad">$0</span></div>
-    <div class="summary-row"><span class="lbl">Meta si se vende todo</span><span class="v">$1.335.000 · utilidad $875.000</span></div>
+    <div class="summary-row"><span class="lbl">Ingreso total (cobrado + fiado)</span><span class="v" id="rIngresoTotal">$0</span></div>
+    <div class="summary-row sub"><span class="lbl">↳ Efectivo</span><span class="v" id="rEfectivo">$0</span></div>
+    <div class="summary-row sub"><span class="lbl">↳ Transferencia</span><span class="v" id="rTransferencia">$0</span></div>
+    <div class="summary-row sub"><span class="lbl">↳ Pendiente por cobrar</span><span class="v neg" id="rPendiente">$0</span></div>
+    <div class="summary-row"><span class="lbl">Costo inicial</span><span class="v" id="rCostoInicial">$460.000</span></div>
+    <div class="summary-row"><span class="lbl">Gastos adicionales</span><span class="v" id="rGastos">$0</span></div>
+    <div class="summary-row"><span class="lbl">Costo total</span><span class="v" id="rCostoTotal">$460.000</span></div>
+    <div class="summary-row"><span class="lbl">Utilidad real (con lo cobrado)</span><span class="v" id="rUtilidadReal">$0</span></div>
+    <div class="summary-row"><span class="lbl">Utilidad proyectada (si cobran todo)</span><span class="v" id="rUtilidadProy">$0</span></div>
   </div>
+
+  <h2 class="section">Gastos adicionales</h2>
+  <div class="gasto-form">
+    <input id="gastoDesc" type="text" placeholder="Ej: hielo extra">
+    <input id="gastoValor" type="number" placeholder="$" min="0">
+    <button onclick="agregarGasto()">Agregar</button>
+  </div>
+  <div id="gastosList"><div class="empty">Sin gastos adicionales.</div></div>
 
   <h2 class="section">Gráficas</h2>
 
   <div class="donut-wrap">
-    <div class="donut" id="donutChart">
+    <div class="donut" id="donutTipoChart">
       <div class="donut-center">
-        <div class="dc-val" id="donutTotal">$0</div>
-        <div class="dc-lbl">ingresos</div>
+        <div class="dc-val" id="donutTipoTotal">$0</div>
+        <div class="dc-lbl">por combo</div>
       </div>
     </div>
     <div class="donut-legend">
       <div class="legend-item"><span class="swatch gold"></span>Sencillos <b id="legSencillo">$0</b></div>
       <div class="legend-item"><span class="swatch red"></span>Triples <b id="legTriple">$0</b></div>
+    </div>
+  </div>
+
+  <div class="donut-wrap">
+    <div class="donut" id="donutCobroChart">
+      <div class="donut-center">
+        <div class="dc-val" id="donutCobroTotal">$0</div>
+        <div class="dc-lbl">total</div>
+      </div>
+    </div>
+    <div class="donut-legend">
+      <div class="legend-item"><span class="swatch gold"></span>Efectivo <b id="legEfectivo">$0</b></div>
+      <div class="legend-item"><span class="swatch red"></span>Transferencia <b id="legTransferencia">$0</b></div>
+      <div class="legend-item"><span class="swatch grey"></span>Pendiente <b id="legPendiente">$0</b></div>
     </div>
   </div>
 
@@ -301,18 +373,18 @@
   </div>
 
   <div class="bars-card">
-    <div class="bars-title">Costo · Ingreso · Utilidad</div>
+    <div class="bars-title">Costo · Utilidad real · Utilidad proyectada</div>
     <div class="bar-row">
-      <div class="bar-label"><span>Costo invertido</span><b>$460.000</b></div>
-      <div class="bar-track"><div class="bar-fill grey" style="width:100%"></div></div>
+      <div class="bar-label"><span>Costo total</span><b id="finCostoTxt">$460.000</b></div>
+      <div class="bar-track"><div class="bar-fill grey" id="finCostoFill"></div></div>
     </div>
     <div class="bar-row">
-      <div class="bar-label"><span>Ingreso</span><b id="finIngresoTxt">$0</b></div>
-      <div class="bar-track"><div class="bar-fill gold" id="finIngresoFill"></div></div>
+      <div class="bar-label"><span>Utilidad real</span><b id="finUtilRealTxt">$0</b></div>
+      <div class="bar-track"><div class="bar-fill good" id="finUtilRealFill"></div></div>
     </div>
     <div class="bar-row">
-      <div class="bar-label"><span>Utilidad</span><b id="finUtilidadTxt">$0</b></div>
-      <div class="bar-track"><div class="bar-fill good" id="finUtilidadFill"></div></div>
+      <div class="bar-label"><span>Utilidad proyectada</span><b id="finUtilProyTxt">$0</b></div>
+      <div class="bar-track"><div class="bar-fill gold" id="finUtilProyFill"></div></div>
     </div>
   </div>
 
@@ -332,6 +404,7 @@
     <hr class="receipt-divider">
     <div id="rItemsContainer"></div>
     <div class="rline" id="rCompradorLine" style="display:none;"><span>Cliente</span><span id="rCompradorTxt"></span></div>
+    <div class="rline" id="rEstadoLine"><span>Estado</span><span id="rEstadoTxt"></span></div>
     <div class="rline rtotal"><span>Total</span><span id="rTotalTxt"></span></div>
     <div class="receipt-footer">¡Gracias por tu compra! 🥃</div>
     <div class="receipt-actions">
@@ -345,13 +418,17 @@
 
 <script>
 /* ======= CONFIGURA ESTO ======= */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6WGISplJrxo56VgBFHJNoWfeDopWACkZpzkMrJ7KKZ5YVTuLtDrYaFvrxgBBPDNRa/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxr68uSGwLD_OWQZkWh6S4YOHRvPy-zya6eFSFI4VM1zoMkuVSrAD-dsquSJ2SxiRQ/exec';
 /* =============================== */
 
 const PRECIOS = { individual: 10000, triple: 25000 };
 let resumen = null;
 let ventas = [];
+let gastos = [];
 let cart = { individual: 0, triple: 0 };
+let pagoEstado = 'pagado';   // 'pagado' | 'debe'
+let metodoPago = 'efectivo'; // 'efectivo' | 'transferencia'
+let editingGrupo = null;
 let lastReceipt = null;
 
 function fmt(n){ return '$' + Math.round(n).toLocaleString('es-CO'); }
@@ -363,45 +440,13 @@ function setSync(state){
   txt.textContent = state === 'busy' ? 'Guardando…' : state === 'off' ? 'Sin conexión' : 'Sincronizado con la hoja';
 }
 
-// Muestra el error real en pantalla (además de la consola) para que sea fácil copiarlo
-function showDebug(label, err, extra){
-  const box = document.getElementById('debugBox');
-  let msg = '❌ ' + label + '\n';
-  if (err) msg += 'Error: ' + (err.message || err) + '\n';
-  if (extra) msg += extra;
-  box.textContent = msg;
-  box.classList.add('show');
-  console.error(label, err, extra || '');
-}
-
-async function fetchConDiagnostico(url, options, etiqueta){
-  let res;
-  try{
-    res = await fetch(url, options);
-  }catch(err){
-    // Esto casi siempre es un fallo de red o de CORS antes de recibir cualquier respuesta
-    showDebug(etiqueta + ' — fetch() falló (red/CORS)', err);
-    throw err;
-  }
-  const rawText = await res.text();
-  if(!res.ok){
-    showDebug(etiqueta + ' — el servidor respondió con error HTTP ' + res.status, null, rawText.slice(0,300));
-    throw new Error('HTTP ' + res.status);
-  }
-  try{
-    return JSON.parse(rawText);
-  }catch(err){
-    // Esto pasa si Apps Script devolvió HTML (ej. página de login de Google) en vez de JSON
-    showDebug(etiqueta + ' — la respuesta no era JSON válido', err, rawText.slice(0,300));
-    throw err;
-  }
-}
-
 async function cargarDatos(){
   setSync('busy');
   try{
-    const data = await fetchConDiagnostico(SCRIPT_URL, { method:'GET' }, 'Cargar datos');
+    const res = await fetch(SCRIPT_URL, { method:'GET' });
+    const data = await res.json();
     ventas = data.ventas || [];
+    gastos = data.gastos || [];
     resumen = data.resumen;
     render();
     setSync('on');
@@ -411,11 +456,24 @@ async function cargarDatos(){
   }
 }
 
-// ---------- Carrito ----------
+// ---------- Carrito y selector de pago ----------
 
 function changeQty(tipo, delta){
   cart[tipo] = Math.max(0, cart[tipo] + delta);
   updateCartUI();
+}
+
+function setEstado(estado){
+  pagoEstado = estado;
+  document.getElementById('btnPagado').classList.toggle('active', estado === 'pagado');
+  document.getElementById('btnDebe').classList.toggle('active', estado === 'debe');
+  document.getElementById('metodoSelector').style.display = estado === 'pagado' ? 'flex' : 'none';
+}
+
+function setMetodo(metodo){
+  metodoPago = metodo;
+  document.getElementById('btnEfectivo').classList.toggle('active', metodo === 'efectivo');
+  document.getElementById('btnTransferencia').classList.toggle('active', metodo === 'transferencia');
 }
 
 function updateCartUI(){
@@ -435,39 +493,144 @@ async function registrarVenta(){
   document.getElementById('btnRegister').disabled = true;
   setSync('busy');
   const comprador = document.getElementById('compradorInput').value.trim();
+
+  const body = editingGrupo
+    ? { action:'edit', grupo: editingGrupo, items, comprador }
+    : { action:'add', items, comprador, pagado: pagoEstado === 'pagado', metodoPago };
+
   try{
-    const data = await fetchConDiagnostico(SCRIPT_URL, {
+    const res = await fetch(SCRIPT_URL, {
       method:'POST',
       headers:{ 'Content-Type':'text/plain' }, // evita preflight CORS con Apps Script
-      body: JSON.stringify({ action:'add', items, comprador })
-    }, 'Registrar venta');
-    if(!data.ok) { showDebug('Registrar venta — el script respondió ok:false', null, data.error); throw new Error(data.error || 'Error desconocido'); }
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error || 'Error desconocido');
     ventas = data.ventas;
+    gastos = data.gastos || [];
     resumen = data.resumen;
     render();
     setSync('on');
-    mostrarRecibo(items, comprador);
+
+    if(editingGrupo){
+      showToast('✅ Venta actualizada');
+    }else{
+      mostrarRecibo(items, comprador, pagoEstado, metodoPago);
+    }
+
     cart = { individual:0, triple:0 };
-    updateCartUI();
+    editingGrupo = null;
     document.getElementById('compradorInput').value = '';
+    document.getElementById('btnRegister').textContent = 'Registrar venta';
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    setEstado('pagado'); setMetodo('efectivo');
+    updateCartUI();
   }catch(err){
     setSync('off');
-    showToast('⚠️ No se guardó la venta, mira el detalle en el cuadro rojo');
+    showToast('⚠️ No se guardó, intenta de nuevo');
     document.getElementById('btnRegister').disabled = false;
   }
+}
+
+function editarVenta(grupo){
+  const filas = ventas.filter(v => v.grupo === grupo);
+  if(filas.length === 0) return;
+  cart = { individual:0, triple:0 };
+  filas.forEach(v => {
+    const key = v.tipo === 'Sencillo' ? 'individual' : 'triple';
+    cart[key] += Number(v.cantidad) || 0;
+  });
+  document.getElementById('compradorInput').value = filas[0].comprador || '';
+  editingGrupo = grupo;
+  updateCartUI();
+  document.getElementById('btnRegister').textContent = 'Guardar cambios';
+  document.getElementById('cancelEditBtn').style.display = 'block';
+  window.scrollTo({ top:0, behavior:'smooth' });
+  showToast('✏️ Editando venta — ajusta y guarda');
+}
+
+function cancelarEdicion(){
+  editingGrupo = null;
+  cart = { individual:0, triple:0 };
+  document.getElementById('compradorInput').value = '';
+  updateCartUI();
+  document.getElementById('btnRegister').textContent = 'Registrar venta';
+  document.getElementById('cancelEditBtn').style.display = 'none';
 }
 
 async function deleteSale(grupo){
   if(!confirm('¿Eliminar esta venta completa de la hoja?')) return;
   setSync('busy');
   try{
-    const data = await fetchConDiagnostico(SCRIPT_URL, {
-      method:'POST',
-      headers:{ 'Content-Type':'text/plain' },
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{ 'Content-Type':'text/plain' },
       body: JSON.stringify({ action:'delete', grupo })
-    }, 'Eliminar venta');
-    ventas = data.ventas;
-    resumen = data.resumen;
+    });
+    const data = await res.json();
+    ventas = data.ventas; gastos = data.gastos || []; resumen = data.resumen;
+    render();
+    setSync('on');
+  }catch(err){
+    setSync('off');
+    showToast('⚠️ No se pudo eliminar');
+  }
+}
+
+async function marcarPagada(grupo, metodo){
+  setSync('busy');
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify({ action:'marcarPagado', grupo, metodoPago: metodo })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error);
+    ventas = data.ventas; gastos = data.gastos || []; resumen = data.resumen;
+    render();
+    setSync('on');
+    showToast('✅ Marcada como pagada');
+  }catch(err){
+    setSync('off');
+    showToast('⚠️ No se pudo actualizar');
+  }
+}
+
+// ---------- Gastos adicionales ----------
+
+async function agregarGasto(){
+  const desc = document.getElementById('gastoDesc').value.trim();
+  const valor = Number(document.getElementById('gastoValor').value);
+  if(!desc || !valor || valor <= 0){ showToast('Escribe una descripción y un valor válido'); return; }
+  setSync('busy');
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify({ action:'addGasto', descripcion:desc, valor })
+    });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error);
+    ventas = data.ventas; gastos = data.gastos || []; resumen = data.resumen;
+    render();
+    setSync('on');
+    document.getElementById('gastoDesc').value = '';
+    document.getElementById('gastoValor').value = '';
+    showToast('Gasto agregado');
+  }catch(err){
+    setSync('off');
+    showToast('⚠️ No se pudo agregar el gasto');
+  }
+}
+
+async function eliminarGasto(id){
+  if(!confirm('¿Eliminar este gasto?')) return;
+  setSync('busy');
+  try{
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{ 'Content-Type':'text/plain' },
+      body: JSON.stringify({ action:'deleteGasto', id })
+    });
+    const data = await res.json();
+    ventas = data.ventas; gastos = data.gastos || []; resumen = data.resumen;
     render();
     setSync('on');
   }catch(err){
@@ -480,9 +643,9 @@ async function deleteSale(grupo){
 
 function render(){
   if(!resumen) return;
-  const pct = Math.min(100, (resumen.ingreso / resumen.metaIngreso) * 100);
+  const pct = Math.min(100, (resumen.ingresoCobrado / resumen.metaIngreso) * 100);
 
-  document.getElementById('ingresoActual').textContent = fmt(resumen.ingreso);
+  document.getElementById('ingresoActual').textContent = fmt(resumen.ingresoCobrado);
   document.getElementById('pctTxt').textContent = pct.toFixed(0) + '% recaudado';
 
   document.getElementById('vidrioRestante').innerHTML = resumen.vidrioRestante + ' <small>/ ' + resumen.totalVidrio + '</small>';
@@ -490,68 +653,92 @@ function render(){
   document.getElementById('cardVidrio').classList.toggle('warn', resumen.vidrioRestante <= 15);
   document.getElementById('cardPlastico').classList.toggle('warn', resumen.plasticoRestante <= 15);
 
-  document.getElementById('rCountSingle').textContent = resumen.sencillos;
-  document.getElementById('rCountTriple').textContent = resumen.triples;
-  document.getElementById('rIngreso').textContent = fmt(resumen.ingreso);
-  const rUt = document.getElementById('rUtilidad');
-  rUt.textContent = fmt(resumen.utilidad);
-  rUt.className = 'v ' + (resumen.utilidad >= 0 ? 'pos' : 'neg');
-
   const fillRect = document.getElementById('fillRect');
   const maxH = 88;
   const h = (pct/100) * maxH;
   fillRect.setAttribute('y', 92 - h);
   fillRect.setAttribute('height', h);
 
+  document.getElementById('rCountSingle').textContent = resumen.sencillos;
+  document.getElementById('rCountTriple').textContent = resumen.triples;
+  document.getElementById('rIngresoTotal').textContent = fmt(resumen.ingresoTotal);
+  document.getElementById('rEfectivo').textContent = fmt(resumen.efectivo);
+  document.getElementById('rTransferencia').textContent = fmt(resumen.transferencia);
+  document.getElementById('rPendiente').textContent = fmt(resumen.ingresoPendiente);
+  document.getElementById('rCostoInicial').textContent = fmt(resumen.costoInicial);
+  document.getElementById('rGastos').textContent = fmt(resumen.gastosAdicionales);
+  document.getElementById('rCostoTotal').textContent = fmt(resumen.costoTotal);
+
+  const rUtR = document.getElementById('rUtilidadReal');
+  rUtR.textContent = fmt(resumen.utilidadReal);
+  rUtR.className = 'v ' + (resumen.utilidadReal >= 0 ? 'pos' : 'neg');
+  const rUtP = document.getElementById('rUtilidadProy');
+  rUtP.textContent = fmt(resumen.utilidadProyectada);
+  rUtP.className = 'v ' + (resumen.utilidadProyectada >= 0 ? 'pos' : 'neg');
+
   renderCharts(resumen);
   renderHistory(ventas);
+  renderGastos(gastos);
 }
 
 function renderCharts(r){
-  // Donut: ingresos por tipo de combo
+  // Donut 1: ingresos por tipo de combo
   const ingresoSencillo = r.sencillos * PRECIOS.individual;
   const ingresoTriple = r.triples * PRECIOS.triple;
-  const totalDonut = ingresoSencillo + ingresoTriple;
-  const donutEl = document.getElementById('donutChart');
-  if(totalDonut === 0){
-    donutEl.style.background = 'rgba(255,255,255,0.08)';
-  }else{
-    const pctS = (ingresoSencillo / totalDonut) * 100;
-    donutEl.style.background = `conic-gradient(var(--gold-soft) 0% ${pctS}%, var(--red) ${pctS}% 100%)`;
-  }
-  document.getElementById('donutTotal').textContent = fmt(totalDonut);
+  const totalTipo = ingresoSencillo + ingresoTriple;
+  const donutTipo = document.getElementById('donutTipoChart');
+  donutTipo.style.background = totalTipo === 0
+    ? 'rgba(255,255,255,0.08)'
+    : `conic-gradient(var(--gold-soft) 0% ${(ingresoSencillo/totalTipo)*100}%, var(--red) ${(ingresoSencillo/totalTipo)*100}% 100%)`;
+  document.getElementById('donutTipoTotal').textContent = fmt(totalTipo);
   document.getElementById('legSencillo').textContent = fmt(ingresoSencillo);
   document.getElementById('legTriple').textContent = fmt(ingresoTriple);
 
+  // Donut 2: efectivo / transferencia / pendiente
+  const totalCobro = r.efectivo + r.transferencia + r.ingresoPendiente;
+  const donutCobro = document.getElementById('donutCobroChart');
+  if(totalCobro === 0){
+    donutCobro.style.background = 'rgba(255,255,255,0.08)';
+  }else{
+    const pE = (r.efectivo/totalCobro)*100;
+    const pT = (r.transferencia/totalCobro)*100;
+    donutCobro.style.background = `conic-gradient(var(--gold-soft) 0% ${pE}%, var(--red) ${pE}% ${pE+pT}%, var(--muted) ${pE+pT}% 100%)`;
+  }
+  document.getElementById('donutCobroTotal').textContent = fmt(totalCobro);
+  document.getElementById('legEfectivo').textContent = fmt(r.efectivo);
+  document.getElementById('legTransferencia').textContent = fmt(r.transferencia);
+  document.getElementById('legPendiente').textContent = fmt(r.ingresoPendiente);
+
   // Barras de inventario
-  const pctVidrio = (r.vidrioVendido / r.totalVidrio) * 100;
-  const pctPlastico = (r.plasticoVendido / r.totalPlastico) * 100;
-  document.getElementById('barVidrioFill').style.width = Math.min(100, pctVidrio) + '%';
-  document.getElementById('barPlasticoFill').style.width = Math.min(100, pctPlastico) + '%';
+  document.getElementById('barVidrioFill').style.width = Math.min(100, (r.vidrioVendido/r.totalVidrio)*100) + '%';
+  document.getElementById('barPlasticoFill').style.width = Math.min(100, (r.plasticoVendido/r.totalPlastico)*100) + '%';
   document.getElementById('barVidrioTxt').textContent = r.vidrioVendido + ' / ' + r.totalVidrio;
   document.getElementById('barPlasticoTxt').textContent = r.plasticoVendido + ' / ' + r.totalPlastico;
 
   // Barras financieras (escala relativa a la meta de ingreso)
   const escala = r.metaIngreso;
-  document.getElementById('finIngresoFill').style.width = Math.min(100, (r.ingreso / escala) * 100) + '%';
-  document.getElementById('finIngresoTxt').textContent = fmt(r.ingreso);
-  const utilFill = document.getElementById('finUtilidadFill');
-  const utilTxt = document.getElementById('finUtilidadTxt');
-  utilTxt.textContent = fmt(r.utilidad);
-  if(r.utilidad >= 0){
-    utilFill.className = 'bar-fill good';
-    utilFill.style.width = Math.min(100, (r.utilidad / escala) * 100) + '%';
-  }else{
-    utilFill.className = 'bar-fill red';
-    utilFill.style.width = Math.min(100, (Math.abs(r.utilidad) / r.costoTotal) * 100) + '%';
-  }
+  document.getElementById('finCostoFill').style.width = Math.min(100, (r.costoTotal/escala)*100) + '%';
+  document.getElementById('finCostoTxt').textContent = fmt(r.costoTotal);
+
+  const realFill = document.getElementById('finUtilRealFill');
+  document.getElementById('finUtilRealTxt').textContent = fmt(r.utilidadReal);
+  realFill.className = 'bar-fill ' + (r.utilidadReal >= 0 ? 'good' : 'red');
+  realFill.style.width = Math.min(100, (Math.abs(r.utilidadReal)/escala)*100) + '%';
+
+  const proyFill = document.getElementById('finUtilProyFill');
+  document.getElementById('finUtilProyTxt').textContent = fmt(r.utilidadProyectada);
+  proyFill.className = 'bar-fill ' + (r.utilidadProyectada >= 0 ? 'gold' : 'red');
+  proyFill.style.width = Math.min(100, (Math.abs(r.utilidadProyectada)/escala)*100) + '%';
 }
 
 function agruparVentas(lista){
   const grupos = {};
   lista.forEach(v => {
     if(!grupos[v.grupo]){
-      grupos[v.grupo] = { grupo:v.grupo, comprador:v.comprador, fecha:v.fecha, hora:v.hora, items:[], total:0 };
+      grupos[v.grupo] = {
+        grupo:v.grupo, comprador:v.comprador, fecha:v.fecha, hora:v.hora,
+        estado:v.estado, metodoPago:v.metodoPago, items:[], total:0
+      };
     }
     grupos[v.grupo].items.push(v);
     grupos[v.grupo].total += Number(v.valor) || 0;
@@ -569,32 +756,64 @@ function renderHistory(lista){
   listEl.innerHTML = grupos.map(g => {
     const itemsTxt = g.items.map(i => `${i.cantidad}× Combo ${i.tipo}`).join(' + ');
     const compradorTxt = g.comprador ? ' · ' + g.comprador : '';
+    const badge = g.estado === 'Debe'
+      ? `<span class="badge debe">🕒 Debe</span>`
+      : `<span class="badge pagado">✅ Pagado · ${g.metodoPago}</span>`;
+    const pagoBtns = g.estado === 'Debe'
+      ? `<div class="pago-actions">
+           <button onclick="marcarPagada('${g.grupo}','efectivo')">💵 Pagó efectivo</button>
+           <button onclick="marcarPagada('${g.grupo}','transferencia')">📲 Pagó transf.</button>
+         </div>`
+      : '';
     return `<div class="hist-item">
       <div class="hist-top">
         <div>
           <div class="hist-items-list">${itemsTxt}</div>
           <div class="hist-meta">${g.fecha} ${g.hora}${compradorTxt}</div>
+          ${badge}
         </div>
         <div class="hist-right">
           <span class="hist-total">${fmt(g.total)}</span>
+          <button class="hist-edit" onclick="editarVenta('${g.grupo}')">✏️</button>
           <button class="hist-del" onclick="deleteSale('${g.grupo}')">×</button>
         </div>
       </div>
+      ${pagoBtns}
     </div>`;
   }).join('');
 }
 
+function renderGastos(lista){
+  const el = document.getElementById('gastosList');
+  if(!lista || lista.length === 0){
+    el.innerHTML = '<div class="empty">Sin gastos adicionales.</div>';
+    return;
+  }
+  el.innerHTML = [...lista].reverse().map(g => `
+    <div class="hist-item">
+      <div class="hist-top">
+        <div>
+          <div class="hist-items-list">${g.descripcion}</div>
+          <div class="hist-meta">${g.fecha} ${g.hora}</div>
+        </div>
+        <div class="hist-right">
+          <span class="hist-total">${fmt(g.valor)}</span>
+          <button class="hist-del" onclick="eliminarGasto('${g.id}')">×</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
 // ---------- Recibo ----------
 
-function mostrarRecibo(items, comprador){
+function mostrarRecibo(items, comprador, estado, metodo){
   const fechaTxt = new Date().toLocaleString('es-CO', { dateStyle:'medium', timeStyle:'short' });
   document.getElementById('rFecha').textContent = fechaTxt;
 
   let total = 0;
   const itemsHtml = items.map(i => {
     const nombre = i.tipo === 'individual' ? 'Combo sencillo' : 'Combo triple';
-    const precio = PRECIOS[i.tipo];
-    const subtotal = precio * i.cantidad;
+    const subtotal = PRECIOS[i.tipo] * i.cantidad;
     total += subtotal;
     return `<div class="rline"><span>${i.cantidad}× ${nombre}</span><span>${fmt(subtotal)}</span></div>`;
   }).join('');
@@ -609,7 +828,10 @@ function mostrarRecibo(items, comprador){
     compLine.style.display = 'none';
   }
 
-  lastReceipt = { items, comprador, total, fechaTxt };
+  const estadoTxt = estado === 'debe' ? '🕒 Debe' : `✅ Pagado (${metodo === 'transferencia' ? 'Transferencia' : 'Efectivo'})`;
+  document.getElementById('rEstadoTxt').textContent = estadoTxt;
+
+  lastReceipt = { items, comprador, total, fechaTxt, estado, metodo };
   document.getElementById('receiptOverlay').classList.add('show');
 }
 
@@ -628,9 +850,9 @@ function generarReciboCanvas(receipt){
   const lineHeight = 26;
   const headerHeight = 118;
   const itemsHeight = lineas.length * lineHeight;
-  const footerHeight = receipt.comprador ? 132 : 108;
+  const footerHeight = (receipt.comprador ? 132 : 108) + 22; // +22 por la línea de estado
   const height = headerHeight + itemsHeight + footerHeight;
-  const scale = 2; // para que se vea nítido en el celular
+  const scale = 2;
 
   const canvas = document.createElement('canvas');
   canvas.width = width * scale;
@@ -638,13 +860,11 @@ function generarReciboCanvas(receipt){
   const ctx = canvas.getContext('2d');
   ctx.scale(scale, scale);
 
-  // papel
   ctx.fillStyle = '#fdfaf2';
   ctx.fillRect(0, 0, width, height);
   ctx.strokeStyle = '#e5dcc3';
   ctx.strokeRect(0.5, 0.5, width - 1, height - 1);
 
-  // franja superior dorado/rojo
   const stripe = 10;
   for(let x = 0; x < width; x += stripe * 2){
     ctx.fillStyle = '#d8a93b';
@@ -702,6 +922,13 @@ function generarReciboCanvas(receipt){
   }
 
   ctx.textAlign = 'left';
+  ctx.font = '400 12px Arial';
+  ctx.fillStyle = '#a89a6f';
+  const estadoTxt = receipt.estado === 'debe' ? 'Estado: Debe' : 'Estado: Pagado (' + (receipt.metodo === 'transferencia' ? 'Transferencia' : 'Efectivo') + ')';
+  ctx.fillText(estadoTxt, 24, y);
+  y += 26;
+
+  ctx.textAlign = 'left';
   ctx.font = '800 18px Arial';
   ctx.fillStyle = '#1f2e22';
   ctx.fillText('TOTAL', 24, y);
@@ -732,12 +959,10 @@ function compartirRecibo(){
         await navigator.share({ files: [file], title: 'Recibo Copas Manzanares' });
         return;
       }catch(e){
-        // el usuario canceló el panel de compartir, no hacemos nada más
         return;
       }
     }
 
-    // Si el celular no soporta compartir imágenes: la descargamos y abrimos WhatsApp con el texto
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'recibo-copas-manzanares.png';
